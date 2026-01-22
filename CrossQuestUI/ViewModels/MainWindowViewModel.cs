@@ -40,7 +40,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         _pageTypes =
         [
-            typeof(IntroductionViewModel),
+            typeof(InstancesViewModel),
             typeof(ConfigSetupViewModel),
             typeof(VerificationViewModel),
             typeof(BaseFileDownloadViewModel),

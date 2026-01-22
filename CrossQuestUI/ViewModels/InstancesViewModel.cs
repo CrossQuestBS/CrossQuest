@@ -10,11 +10,9 @@ using CrossQuestUI.Services;
 
 namespace CrossQuestUI.ViewModels
 {
-    public partial class IntroductionViewModel(IModdingInstanceService moddingInstanceService) : PageViewModelBase
+    public partial class InstancesViewModel(IModdingInstanceService moddingInstanceService) : PageViewModelBase
     {
         public static string Title => "CrossQuest";
-        public static string Message => "Make sure to have Quest connected, and Press \"Next\" to start process.";
-        
         public ObservableCollection<ModdingInstance> ModdingInstances { get; set; } = new ObservableCollection<ModdingInstance>(new List<ModdingInstance>());
 
         [ObservableProperty] private CreateInstanceViewModel _createInstanceViewModel = new CreateInstanceViewModel();

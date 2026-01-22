@@ -37,7 +37,7 @@ namespace CrossQuestUI.Services
 
             Directory.CreateDirectory(path);
 
-            var instance = new ModdingInstance(path, unityPath, version, gamePath, [], false);
+            var instance = new ModdingInstance(path, unityPath, version, gamePath, []);
 
             var jsonString = JsonSerializer.Serialize(instance);
             

@@ -9,7 +9,7 @@ namespace CrossQuestUI.Services
         public static void AddDesignServices(this IServiceCollection collection)
         {
             collection.AddSingleton<IModdingInstanceService, ModdingInstanceServiceMock>();
-            collection.AddTransient<IntroductionViewModel>();
+            collection.AddTransient<InstancesViewModel>();
 
         }
         
@@ -26,7 +26,7 @@ namespace CrossQuestUI.Services
             collection.AddSingleton<IModdingInstanceService, ModdingInstanceService>();
 
             collection.AddTransient<MainWindowViewModel>();
-            collection.AddTransient<IntroductionViewModel>();
+            collection.AddTransient<InstancesViewModel>();
             collection.AddTransient<ConfigSetupViewModel>();
             collection.AddTransient<VerificationViewModel>();
             collection.AddTransient<BaseFileDownloadViewModel>();

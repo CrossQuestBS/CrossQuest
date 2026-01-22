@@ -7,16 +7,16 @@ using CrossQuestUI.ViewModels;
 
 namespace CrossQuestUI.Views
 {
-    public partial class IntroductionView : UserControl
+    public partial class InstancesView : UserControl
     {
         protected override void OnLoaded(RoutedEventArgs e)
         {
             base.OnLoaded(e);
-            var vm = (IntroductionViewModel)DataContext;
+            var vm = (InstancesViewModel)DataContext;
             Dispatcher.UIThread.InvokeAsync(vm.OnLoad);
         }
 
-        public IntroductionView()
+        public InstancesView()
         {
             InitializeComponent();
         }

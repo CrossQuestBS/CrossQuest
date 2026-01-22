@@ -7,10 +7,10 @@
              mc:Ignorable="d"
              d:DesignWidth="1000"
              d:DesignHeight="600"
-             x:Class="CrossQuestUI.Views.IntroductionView"
-             d:DataContext="{services:DesignResolve {x:Type vm:IntroductionViewModel}}"
+             x:Class="CrossQuestUI.Views.InstancesView"
+             d:DataContext="{services:DesignResolve {x:Type vm:InstancesViewModel}}"
              x:CompileBindings="True"
-             x:DataType="vm:IntroductionViewModel"
+             x:DataType="vm:InstancesViewModel"
              Foreground="White"
              Background="#171717">
 

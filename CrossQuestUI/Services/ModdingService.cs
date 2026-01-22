@@ -27,136 +27,9 @@ namespace CrossQuestUI.Services
         private string _resourceFolder = "";
 
         private string _buildPath = "";
+        
 
-        private Dictionary<string, string[]> assemblies = new Dictionary<string, string[]>
-        {
-            {
-                "beatsaber",
-                [
-                    "BeatGames.Analytics.dll",
-                    "BeatSaber.AvatarCore.dll",
-                    "BeatSaber.BeatAvatarAdapter.dll",
-                    "BeatSaber.BeatAvatarSDK.dll",
-                    "BeatSaber.Credits.dll",
-                    "BeatSaber.Destinations.dll",
-                    "BeatSaber.Environments.BTS.dll",
-                    "BeatSaber.Environments.Interscope.dll",
-                    "BeatSaber.Environments.LadyGaga.dll",
-                    "BeatSaber.Environments.LinkinPark2.dll",
-                    "BeatSaber.GameSettings.dll",
-                    "BeatSaber.Init.dll",
-                    "BeatSaber.Main.Leaderboards.dll",
-                    "BeatSaber.Multiplayer.Core.dll",
-                    "BeatSaber.Multiplayer.TimelineMock.dll",
-                    "BeatSaber.OculusPlatform.dll",
-                    "BeatSaber.RecPlay.dll",
-                    "BeatSaber.Styles.dll",
-                    "BeatSaber.Settings.dll",
-                    "BeatSaber.TrackDefinitions.dll",
-                    "BeatSaber.ViewSystem.dll"
-                ]
-            },
-            {
-                "bglib",
-                [
-                    "BGLib.AppFlow.dll",
-                    "BGLib.Attributes.dll",
-                    "BGLib.ClassicStaticBatcher.dll",
-                    "BGLib.DotnetExtension.dll",
-                    "BGLib.FileStorage.dll",
-                    "BGLib.JsonExtension.dll",
-                    "BGLib.MetaRemoteAssets.dll",
-                    "BGLib.Notepad.dll",
-                    "BGLib.Polyglot.dll",
-                    "BGLib.UnityExtension.dll",
-                ]
-            },
-            {
-                "main",
-                [
-                    "AdditionalContentModel.Interfaces.dll",
-                    "Analytics.Model.dll",
-                    "BeatmapCore.dll",
-                    "BGNetCore.dll",
-                    "BGNetLogging.dll",
-                    "Colors.dll",
-                    "Core.dll",
-                    "DataModels.dll",
-                    "GameInit.dll",
-                    "GameplayCore.dll",
-                    "Helpers.dll",
-                    "HMLib.dll",
-                    "HMRendering.dll",
-                    "HMUI.dll",
-                    "Interactable.dll",
-                    "LiteNetLib.dll",
-                    "Main.dll",
-                    "MediaLoader.dll",
-                    "MenuSystem.dll",
-                    "Menu.ColorSettings.dll",
-                    "Menu.CommonLib.dll",
-                    "MenuLightPreset.dll",
-                    "MidiParser.dll",
-                    "MockCore.dll",
-                    "Networking.NetworkPlayerEntitlementsChecker.dll",
-                    "Networking.dll",
-                    "OverridableData.dll",
-                    "PlatformUserModel.dll",
-                    "Rendering.dll",
-                    "SaberTrail.dll",
-                    "SegmentedControl.dll",
-                    "Transitions.dll",
-                    "Tweening.dll",
-                    "VRUI.dll",
-                    "VRUI.Interfaces.dll",
-                ]
-            },
-            {
-                "oculus-studios",
-                [
-                    "OculusStudios.GraphQL.Client.dll",
-                    "OculusStudios.GraphQL.ClientInterface.dll",
-                    "OculusStudios.HierarchyIcons.dll",
-                    "OculusStudios.Platform.Core.dll",
-                    "OculusStudios.Platform.Oculus.dll"
-                ]
-            },
-            {
-                "third-party",
-                [
-                    "Library.UnityOpus.dll",
-                    "Tayx.Graphy.dll",
-                    "osce.analytics.dll",
-                    "AYellowpaper.SerializedCollections.dll",
-                    "BouncyCastle.Crypto.dll",
-                    "Ignorance.dll",
-                    "Ookii.Dialogs.dll"
-                ]
-            },
-            {
-                "unity",
-                [
-                    "Unity.RenderPipeline.Universal.ShaderLibrary.dll",
-                    "Unity.RenderPipelines.Universal.2D.Runtime.dll",
-                    "Unity.RenderPipelines.Universal.Config.Runtime.dll",
-                    "Unity.RenderPipelines.Universal.Runtime.dll",
-                    "Unity.RenderPipelines.Universal.Shaders.dll",
-                    "Unity.Addressables.dll",
-                    "Unity.Profiling.Core.dll",
-                    "Unity.ResourceManager.dll",
-                ]
-            },
-            {
-                "zenject",
-                [
-                    "ZenjectExtension.dll",
-                    "Zenject.dll",
-                    "Zenject-usage.dll",
-                ]
-            }
-        };
-
-        private void CreateLinkerFile(string linkPath)
+        private void CreateLinkerFile(string linkPath, Dictionary<string, string[]> assemblies)
         {
             List<string> listOfEntries = [];
 
@@ -203,10 +76,9 @@ namespace CrossQuestUI.Services
             return output;
         }
 
-        private bool CopyGameFiles()
+        private bool CopyGameFiles(Dictionary<string, string[]> assemblies)
         {
             var plugins = Path.Join(_unityProject, "Assets", "Plugins");
-
             var pluginFolders = Directory.GetDirectories(plugins);
 
             foreach (var keyPair in assemblies)
@@ -324,11 +196,11 @@ namespace CrossQuestUI.Services
             }
 
             _logger.WriteMessage("Copying Game Files to Unity Project ");
-            CopyGameFiles();
+            CopyGameFiles(null);
             var plugins = Path.Join(_unityProject, "Assets", "Plugins");
            
             _logger.WriteMessage("Creating Linker file");
-            CreateLinkerFile(Path.Join(plugins, "link.xml"));
+            CreateLinkerFile(Path.Join(plugins, "link.xml"), null);
             return true;
         }
 
