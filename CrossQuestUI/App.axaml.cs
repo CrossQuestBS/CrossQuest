@@ -25,48 +25,38 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        
         var services = new ServiceCollection();
-            
-        if (Design.IsDesignMode) {
-            services.AddDesignServices();
-        }
-        else
-        {
-            services.AddCommonServices();
-        }
+
+
+        services.AddCommonServices();
 
 
         Services = services.BuildServiceProvider();
 
 
-        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-
             var applicationPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             var crossQuestAppPath = Path.Join(applicationPath, "CrossQuestBS");
 
 
             // Creats a path if it does not exist!
             Directory.CreateDirectory(crossQuestAppPath);
-            
+
             ApplicationPath = crossQuestAppPath;
-            
+
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-           
-          
+
             var vm = Services.GetRequiredService<MainWindowViewModel>();
-            
+
             desktop.MainWindow = new MainWindow
             {
                 DataContext = vm
             };
 
             StorageProvider = desktop.MainWindow.StorageProvider;
-            
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -85,14 +75,14 @@ public partial class App : Application
         }
     }
 
-    
+
     public new static App? Current => Application.Current as App;
-    
+
     public IServiceProvider? Services { get; private set; }
-    
+
     public IStorageProvider? StorageProvider { get; private set; }
 
-    
+
     public ModdingConfig ModdingConfig { get; set; }
 
     public string ApplicationPath { get; private set; }

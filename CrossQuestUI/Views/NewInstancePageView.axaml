@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:CrossQuestUI.ViewModels"
+             x:DataType="vm:NewInstancePageViewModel"
+             Foreground="White"
+             Background="rgb(20, 20, 20)"
+             x:Class="CrossQuestUI.Views.NewInstancePageView">
+
+
+    <DockPanel LastChildFill="True">
+        <Border Background="rgb(62,62,62)" Margin="10 10 10 0 " Padding="15 10" CornerRadius="4" Height="50" BorderBrush="Black" BorderThickness="1"
+                DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Spacing="10">
+                <Button Command="{Binding GoBackCommand}" Padding="10 5">Go back</Button>
+                <TextBlock FontSize="18" VerticalAlignment="Center">New Instance</TextBlock>
+            </StackPanel>
+        </Border>
+        <Border Width="225" Background="rgb(20,20,20)" BorderBrush="rgb(40,40,40)" BorderThickness="1" Margin="10" CornerRadius="10" DockPanel.Dock="Right">
+            <DockPanel LastChildFill="True">
+                <Border DockPanel.Dock="Top" Height="300">
+                </Border>
+                <Border DockPanel.Dock="Bottom" Padding="10">
+                    <Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
+                            HorizontalAlignment="Center">
+                        Create Instance
+                    </Button>
+                </Border>
+            </DockPanel>
+        </Border>
+        <Border Margin="10" Padding="15" BorderBrush="rgb(40,40,40)" BorderThickness="1" CornerRadius="10">
+            <StackPanel Margin="0 0">
+                <TextBlock FontSize="12" Foreground="rgb(220, 220, 220)" Margin="0 5" >Game version<Span Foreground="Red">*</Span></TextBlock>
+                    <TextBox
+                        FontSize="12"
+                        VerticalContentAlignment="Center"
+                        Text=""
+                        Watermark="Version"
+                        UseFloatingWatermark="False"/>
+            </StackPanel>
+        </Border>
+    </DockPanel>
+
+    <!--<Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0" VerticalAlignment="Top" BorderBrush="Black" Padding="20 10" BorderThickness="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Spacing="10">
+                <Button Command="{Binding GoBackCommand}" Padding="10 5">Go back</Button>
+                <TextBlock FontSize="20" VerticalAlignment="Center">New Instance</TextBlock>
+            </StackPanel>
+        </Border>
+        
+        <Grid Row="1" VerticalAlignment="Stretch" >
+            <Grid ColumnDefinitions="Auto,300">
+                <Border HorizontalAlignment="Stretch" Margin="5" Padding="20" BorderBrush="OldLace" BorderThickness="2">
+                    <TextBlock>What!</TextBlock>
+
+                </Border>
+                <Border Grid.Column="1" HorizontalAlignment="Stretch" BorderBrush="Olive" Margin="5" BorderThickness="2">
+                    <TextBlock>WHAT</TextBlock>
+
+                </Border>
+            </Grid>
+        </Grid>
+        
+    </Grid>-->
+</UserControl>

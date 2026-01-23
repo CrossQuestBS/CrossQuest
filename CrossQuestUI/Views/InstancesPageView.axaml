@@ -1,0 +1,99 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:CrossQuestUI.ViewModels"
+             xmlns:services="clr-namespace:CrossQuestUI.Services"
+             mc:Ignorable="d"
+             d:DesignWidth="1000"
+             d:DesignHeight="600"
+             x:Class="CrossQuestUI.Views.InstancesPageView"
+             d:DataContext="{services:DesignResolve {x:Type vm:InstancesPageViewModel}}"
+             x:CompileBindings="True"
+             x:DataType="vm:InstancesPageViewModel"
+             Foreground="White"
+             Background="#171717">
+
+
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <Border Width="200" Background="rgb(20,20,20)" BorderBrush="rgb(40,40,40)" BorderThickness="1" Margin="10"
+                    CornerRadius="10" DockPanel.Dock="Left">
+                <DockPanel LastChildFill="True">
+                    <Border DockPanel.Dock="Top" Padding="5" Margin="20">
+                        <StackPanel Spacing="10">
+                            <Button Foreground="White" Padding="20 10"
+                                    VerticalAlignment="Bottom" HorizontalContentAlignment="Center"
+                                    HorizontalAlignment="Stretch">
+                                Game Instance
+                            </Button>
+                            <Button Background="Transparent" Foreground="White" Padding="20 10"
+                                    VerticalAlignment="Bottom" HorizontalContentAlignment="Center"
+                                    HorizontalAlignment="Stretch">
+                                Game Versions
+                            </Button>
+                            <Button Background="Transparent" Foreground="White" Padding="20 10"
+                                    VerticalAlignment="Bottom" HorizontalContentAlignment="Center"
+                                    HorizontalAlignment="Stretch">
+                                Game Backups
+                            </Button>
+                        </StackPanel>
+                       
+                    </Border>
+                    <Border DockPanel.Dock="Bottom" Height="300">
+                    </Border>
+                </DockPanel>
+            </Border>
+            <Border Margin="10" Padding="15" BorderBrush="rgb(40,40,40)" BorderThickness="1" CornerRadius="10">
+                <StackPanel VerticalAlignment="Top" HorizontalAlignment="Stretch" Spacing="5">
+                    <Border Background="rgb(62,62,62)" Padding="15 10" CornerRadius="4" BorderBrush="#808080"
+                            Margin="0 0 0 0 " BorderThickness="2">
+                        <Grid  ColumnDefinitions="1.5*, 1.75*, 1.5*, 2*, 4*">
+                            <TextBlock VerticalAlignment="Center">Game</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Grid.Column="1">Game Version</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Grid.Column="2">Ecosystem</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Grid.Column="3">Installation</TextBlock>
+                            <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right"
+                                        Spacing="10">
+                                <Button BorderBrush="#CCCCCC" BorderThickness="1" Background="rgb(56, 56, 56)"
+                                        Grid.Column="0">
+                                    Backup
+                                </Button>
+                                <Button BorderBrush="#CCCCCC" BorderThickness="1" Background="rgb(56, 56, 56)"
+                                        Grid.Column="1" Command="{Binding CreateInstance}">
+                                    New Instance
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <ItemsRepeater ItemsSource="{Binding ModdingInstances}">
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="rgb(42,42,42)" Padding="15 10" CornerRadius="4" Margin="0 10 0 0 "
+                                        BorderThickness="2">
+                                    <Grid HorizontalAlignment="Stretch"
+                                          ColumnDefinitions="1.5*, 1.75*, 1.5*, 5*, 1*">
+                                        <TextBlock VerticalAlignment="Center">Beat Saber</TextBlock>
+                                        <TextBlock VerticalAlignment="Center" Grid.Column="1" Text="{Binding Version}"></TextBlock>
+                                        <TextBlock VerticalAlignment="Center" Grid.Column="2">CrossQuest</TextBlock>
+                                        <TextBlock VerticalAlignment="Center" FontSize="10" HorizontalAlignment="Left"
+                                                   Grid.Column="3" Text="{Binding ModdingPath}">
+                                        </TextBlock>
+                                        <Button Grid.Column="4" HorizontalAlignment="Right" BorderBrush="#CCCCCC"
+                                                BorderThickness="1"
+                                                Background="rgb(56, 56, 56)">
+                                            Modify
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+                </StackPanel>
+            </Border>
+        </DockPanel>
+
+    </Grid>
+
+</UserControl>
