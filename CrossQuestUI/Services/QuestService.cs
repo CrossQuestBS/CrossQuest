@@ -45,7 +45,47 @@ namespace CrossQuestUI.Services
             return await ProcessCallerService.ProcessAsync(adbPath,
                 $"shell appops set --uid {packageId} MANAGE_EXTERNAL_STORAGE allow");
         }
-        
+
+        public static async Task<bool> BuildApk(string folder, string apkPath)
+        {
+            return await ProcessCallerService.ProcessAsync("apktool", $"b \"{folder}\" -o \"{apkPath}\" -f", true);
+
+        }
+
+        public static bool CopyApkFiles(string buildPath, string apkPath)
+        {
+            var libPath = "lib/arm64-v8a";
+            var assetDataPath = "assets/bin/Data";
+            
+            string[] filesToCopy =
+            [
+                $"{assetDataPath}/boot.config", 
+                $"{assetDataPath}/ScriptingAssemblies.json",
+                $"{assetDataPath}/RuntimeInitializeOnLoads.json",
+                $"{assetDataPath}/Managed/Metadata/global-metadata.dat"
+            ];
+
+            ResourceManager.ExtractAssetFile("AndroidManifest.xml", Path.Join(apkPath, "AndroidManifest.xml"));
+            
+            foreach (var file in Directory.GetFiles(Path.Join(buildPath, $"{assetDataPath}/Managed/Resources")))
+            {
+                File.Copy(file, Path.Join(apkPath, $"{assetDataPath}/Managed/Resources", Path.GetFileName(file)), true);
+            }
+            
+            foreach (var file in Directory.GetFiles(Path.Join(buildPath, $"{libPath}")))
+            {
+                File.Copy(file, Path.Join(apkPath, $"{libPath}", Path.GetFileName(file)), true);
+            }
+
+            foreach (var filePath in filesToCopy)
+            {
+                var extractedFilePath = Path.Join(buildPath, filePath);
+                var unpackedFilePath = Path.Join(apkPath, filePath);
+                File.Copy(extractedFilePath, unpackedFilePath, true);
+            }
+
+            return true;
+        }
         
     }
 }

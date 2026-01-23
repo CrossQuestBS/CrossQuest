@@ -10,6 +10,10 @@ namespace CrossQuestUI.Services
         {
             Uri textFileUri = new ($"avares://CrossQuestUI/Assets/{fileName}");
             var stream = AssetLoader.Open(textFileUri);
+            
+            if (File.Exists(path))
+                File.Delete(path);
+            
             using var fileStream = File.Create(path);
             stream.Seek(0, SeekOrigin.Begin);
             stream.CopyTo(fileStream);

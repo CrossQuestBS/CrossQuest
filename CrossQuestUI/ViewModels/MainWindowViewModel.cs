@@ -40,13 +40,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         _pageTypes =
         [
-            typeof(InstancesViewModel),
-            typeof(ConfigSetupViewModel),
-            typeof(VerificationViewModel),
-            typeof(BaseFileDownloadViewModel),
-            typeof(InitialModSetupViewModel),
-            typeof(ModdingProcessViewModel),
-            typeof(DashboardViewModel)
+            typeof(InstancesViewModel)
         ];
         
         foreach (var type in _pageTypes)

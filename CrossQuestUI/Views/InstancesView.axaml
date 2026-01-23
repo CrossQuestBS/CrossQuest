@@ -45,7 +45,7 @@
                                 <TextBlock VerticalAlignment="Center">Beat Saber</TextBlock>
                                 <TextBlock VerticalAlignment="Center" Grid.Column="1" Text="{Binding Version}"></TextBlock>
                                 <TextBlock VerticalAlignment="Center" Grid.Column="2">CrossQuest</TextBlock>
-                                <TextBlock VerticalAlignment="Center" FontSize="10" HorizontalAlignment="Left" Grid.Column="3" Text="{Binding Path}"></TextBlock>
+                                <TextBlock VerticalAlignment="Center" FontSize="10" HorizontalAlignment="Left" Grid.Column="3" Text="{Binding ModdingPath}"></TextBlock>
                                     <Button Grid.Column="4"  HorizontalAlignment="Right" BorderBrush="#CCCCCC" BorderThickness="1"
                                             Background="rgb(56, 56, 56)">
                                         Modify

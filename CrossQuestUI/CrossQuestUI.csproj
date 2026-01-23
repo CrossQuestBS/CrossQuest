@@ -26,11 +26,4 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Views\InitialModSetupView.axaml.cs">
-        <DependentUpon>InitialModSetupView.axaml</DependentUpon>
-        <SubType>Code</SubType>
-      </Compile>
-    </ItemGroup>
 </Project>
