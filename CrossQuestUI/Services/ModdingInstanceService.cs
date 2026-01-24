@@ -7,11 +7,11 @@ using CrossQuestUI.Models;
 
 namespace CrossQuestUI.Services
 {
-    public class ModdingInstanceService : IModdingInstanceService
+    public static class ModdingInstanceService
     {
-        private string InstancePath => Path.Join(App.Current?.ApplicationPath, "Instances");
+        private static string InstancePath => Path.Join(App.Current?.ApplicationPath, "Instances");
         
-        public async Task<ModdingInstance[]> GetInstanceList()
+        public static async Task<ModdingInstance[]> GetInstanceList()
         {
             List<ModdingInstance> instances = [];
             Directory.CreateDirectory(InstancePath);
@@ -30,14 +30,14 @@ namespace CrossQuestUI.Services
             return instances.ToArray();
         }
 
-        public async Task<ModdingInstance> CreateInstance(string unityPath, string version, string apkPath, string gamePath)
+        public static async Task<ModdingInstance> CreateInstance(string unityPath, string version, string apkPath, string gamePath, ModInfo[] mods)
         {
             var guid = Guid.NewGuid();
             var path = Path.Join(InstancePath, guid.ToString());
 
             Directory.CreateDirectory(path);
 
-            var instance = new ModdingInstance(path, unityPath, version, gamePath, []);
+            var instance = new ModdingInstance(path, unityPath, version, gamePath, mods);
 
             var jsonString = JsonSerializer.Serialize(instance);
             

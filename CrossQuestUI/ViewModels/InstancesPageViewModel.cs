@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -10,7 +11,7 @@ using CrossQuestUI.Services;
 
 namespace CrossQuestUI.ViewModels
 {
-    public partial class InstancesPageViewModel(IModdingInstanceService moddingInstanceService) : ViewModelBase
+    public partial class InstancesPageViewModel() : ViewModelBase
     {
         public static string Title => "CrossQuest";
         public ObservableCollection<ModdingInstance> ModdingInstances { get; set; } = new ObservableCollection<ModdingInstance>(new List<ModdingInstance>());
@@ -18,7 +19,7 @@ namespace CrossQuestUI.ViewModels
         public async Task OnLoad()
         {
             ModdingInstances.Clear();
-            var instances = await moddingInstanceService.GetInstanceList();
+            var instances = await ModdingInstanceService.GetInstanceList();
 
             foreach (var instance in instances)
             {

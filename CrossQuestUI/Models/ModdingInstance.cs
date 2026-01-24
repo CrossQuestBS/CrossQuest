@@ -76,7 +76,9 @@ namespace CrossQuestUI.Models
             return await UnityEditorService.CompileProject(UnityPath, UnityProjectPath, ProjectBuildPath);
         }
 
-        public async Task<bool> PostCompile()
+        
+        
+        public async Task<bool> BuildModdedApk()
         {
             var tempPath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
             var buildPath = Path.Join(tempPath, "build");

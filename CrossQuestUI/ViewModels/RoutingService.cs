@@ -14,10 +14,9 @@ namespace CrossQuestUI.Services
         {
             Instances,
             NewInstance,
-            
         }
 
-        private static InstancesPageViewModel _instancesPageViewModel = new (new ModdingInstanceService());
+        private static InstancesPageViewModel _instancesPageViewModel = new();
         private static NewInstancePageViewModel _newInstancePageViewModel = new();
         
         public static event EventHandler<DestinationEventArgs> OnChangedPage;

@@ -13,7 +13,7 @@ namespace CrossQuestUI.Views
         {
             base.OnLoaded(e);
             var vm = (InstancesPageViewModel)DataContext;
-            Dispatcher.UIThread.InvokeAsync(vm.OnLoad);
+            vm.OnLoad();
         }
 
         public InstancesPageView()

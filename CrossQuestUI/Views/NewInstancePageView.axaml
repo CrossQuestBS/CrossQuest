@@ -2,29 +2,85 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
              xmlns:vm="clr-namespace:CrossQuestUI.ViewModels"
              x:DataType="vm:NewInstancePageViewModel"
              Foreground="White"
              Background="rgb(20, 20, 20)"
+             Theme=""
              x:Class="CrossQuestUI.Views.NewInstancePageView">
 
 
+    <Design.DataContext>
+        <vm:NewInstancePageViewModel />
+    </Design.DataContext>
+
     <DockPanel LastChildFill="True">
-        <Border Background="rgb(62,62,62)" Margin="10 10 10 0 " Padding="15 10" CornerRadius="4" Height="50" BorderBrush="Black" BorderThickness="1"
+        <Border Background="rgb(62,62,62)" Margin="10 10 10 0 " Padding="15 10" CornerRadius="4" Height="50"
+                BorderBrush="Black" BorderThickness="1"
                 DockPanel.Dock="Top">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Spacing="10">
                 <Button Command="{Binding GoBackCommand}" Padding="10 5">Go back</Button>
                 <TextBlock FontSize="18" VerticalAlignment="Center">New Instance</TextBlock>
             </StackPanel>
         </Border>
-        <Border Width="225" Background="rgb(20,20,20)" BorderBrush="rgb(40,40,40)" BorderThickness="1" Margin="10" CornerRadius="10" DockPanel.Dock="Right">
+        <Border Width="300" Background="rgb(20,20,20)" BorderBrush="rgb(40,40,40)" BorderThickness="1" Margin="10"
+                CornerRadius="10" DockPanel.Dock="Right">
             <DockPanel LastChildFill="True">
                 <Border DockPanel.Dock="Top" Height="300">
+                    <StackPanel>
+                        <StackPanel Margin="20 10">
+                <TextBlock Foreground="rgb(220, 220, 220)" Margin="0 5" >Unity Editor Path                    <Span Foreground="Red">*</Span>
+                </TextBlock>
+                <Grid ColumnSpacing="10" ColumnDefinitions="*,Auto">
+                    <TextBox
+                        FontSize="12"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding EditorPath, Mode=TwoWay}"
+                        Watermark="Unity Editor Path"
+                        UseFloatingWatermark="False"/>
+                    <Button Grid.Column="1" Command="{Binding SetEditorPathCommand}" Foreground="White" Background="rgb(60, 60, 60)">
+                        Select
+                    </Button>
+                </Grid>
+            </StackPanel>
+            
+            <StackPanel Margin="20 10">
+                <TextBlock Foreground="rgb(220, 220, 220)" Margin="0 5" >Quest APK Path                    <Span Foreground="Red">*</Span>
+                </TextBlock>
+                <Grid ColumnSpacing="10" ColumnDefinitions="*,Auto">
+                    <TextBox
+                        FontSize="12"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding QuestGame, Mode=TwoWay}"
+                        Watermark="Quest APK Path"
+                        UseFloatingWatermark="False"/>
+                    <Button Grid.Column="1" Command="{Binding SetQuestGamePathCommand}" Foreground="White" Background="rgb(60, 60, 60)">
+                        Select
+                    </Button>
+                </Grid>
+            </StackPanel>
+            
+            <StackPanel Margin="20 10">
+                <TextBlock Foreground="rgb(220, 220, 220)" Margin="0 5" >Oculus Game Path                    <Span Foreground="Red">*</Span>
+                </TextBlock>
+                <Grid ColumnSpacing="10" ColumnDefinitions="*,Auto">
+                    <TextBox
+                        FontSize="12"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding GamePath, Mode=TwoWay}"
+                        Watermark="Oculus Game Path"
+                        UseFloatingWatermark="False"/>
+                    <Button Grid.Column="1" Command="{Binding SetGamePathCommand}" Foreground="White" Background="rgb(60, 60, 60)">
+                        Select
+                    </Button>
+                </Grid>
+            </StackPanel>
+                    </StackPanel>
                 </Border>
                 <Border DockPanel.Dock="Bottom" Padding="10">
-                    <Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
-                            HorizontalAlignment="Center">
+                    <Button IsEnabled="{Binding HasFilledOut}" Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
+                            HorizontalAlignment="Center" Command="{Binding CreateInstanceCommand}">
                         Create Instance
                     </Button>
                 </Border>
@@ -32,37 +88,52 @@
         </Border>
         <Border Margin="10" Padding="15" BorderBrush="rgb(40,40,40)" BorderThickness="1" CornerRadius="10">
             <StackPanel Margin="0 0">
-                <TextBlock FontSize="12" Foreground="rgb(220, 220, 220)" Margin="0 5" >Game version<Span Foreground="Red">*</Span></TextBlock>
-                    <TextBox
-                        FontSize="12"
-                        VerticalContentAlignment="Center"
-                        Text=""
-                        Watermark="Version"
-                        UseFloatingWatermark="False"/>
+                <TextBlock FontSize="12" Foreground="rgb(220, 220, 220)" Margin="0 5">
+                    Moddable Game
+                    <Span Foreground="Red">*</Span>
+                </TextBlock>
+                <ComboBox SelectedItem="{Binding SelectedGame}"
+                          SelectedIndex="0"
+                          MaxDropDownHeight="300"
+                          Width="200"
+                          SelectionChanged="SelectingItemsControl_OnSelectionChanged"
+                          ItemsSource="{Binding ModdableGameList}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Text=" - " />
+                                <TextBlock Text="{Binding Version}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ScrollViewer>
+                    <StackPanel Margin="0 10 0 0 ">
+                        <TextBlock FontSize="16" Margin="0 10">Available mods</TextBlock>
+                        <ItemsRepeater IsEnabled="{Binding AvailableMods.Count}" ItemsSource="{Binding AvailableMods}">
+                            <ItemsRepeater.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="rgb(40,40,40)" Background="rgb(25,25,25)" BorderThickness="1"
+                                            Padding="10 5" Margin="0 0 0 10 " CornerRadius="4">
+                                        <StackPanel Orientation="Horizontal" Spacing="20">
+                                            <CheckBox IsVisible="{Binding Required}" IsEnabled="False" IsChecked="True"
+                                                      Content="{Binding Name}">
+                                            </CheckBox>
+                                            <CheckBox IsCheckedChanged="ToggleButton_OnIsCheckedChanged" IsVisible="{Binding !Required}"
+                                                      Content="{Binding Name}">
+                                            </CheckBox>
+                                            <TextBlock Foreground="rgb(180, 180, 180)" VerticalAlignment="Center"
+                                                       Text="{Binding Description}">
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+                        </ItemsRepeater>
+                    </StackPanel>
+                </ScrollViewer>
             </StackPanel>
         </Border>
     </DockPanel>
-
-    <!--<Grid RowDefinitions="Auto,*">
-        <Border Grid.Row="0" VerticalAlignment="Top" BorderBrush="Black" Padding="20 10" BorderThickness="1">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Spacing="10">
-                <Button Command="{Binding GoBackCommand}" Padding="10 5">Go back</Button>
-                <TextBlock FontSize="20" VerticalAlignment="Center">New Instance</TextBlock>
-            </StackPanel>
-        </Border>
-        
-        <Grid Row="1" VerticalAlignment="Stretch" >
-            <Grid ColumnDefinitions="Auto,300">
-                <Border HorizontalAlignment="Stretch" Margin="5" Padding="20" BorderBrush="OldLace" BorderThickness="2">
-                    <TextBlock>What!</TextBlock>
-
-                </Border>
-                <Border Grid.Column="1" HorizontalAlignment="Stretch" BorderBrush="Olive" Margin="5" BorderThickness="2">
-                    <TextBlock>WHAT</TextBlock>
-
-                </Border>
-            </Grid>
-        </Grid>
-        
-    </Grid>-->
 </UserControl>

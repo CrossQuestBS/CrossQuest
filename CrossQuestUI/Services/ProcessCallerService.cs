@@ -43,8 +43,6 @@ namespace CrossQuestUI.Services
 
             var result = await proc.StandardOutput.ReadToEndAsync();
             
-            await proc.WaitForExitAsync();
-
             return result;
         }
     }

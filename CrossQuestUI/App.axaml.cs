@@ -1,13 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using CrossQuestUI.Models;
 using CrossQuestUI.Services;
 using CrossQuestUI.ViewModels;
@@ -23,10 +28,39 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
+    public async Task GetUnityEditors()
+    {
+        var cacheFile = Path.Join(ApplicationPath, "Cache", "UnityEditors.json");
+        if (File.Exists(cacheFile))
+        {
+            var text = await File.ReadAllTextAsync(cacheFile);
+            UnityEditors = JsonSerializer.Deserialize<UnityEditor[]>(text)!;
+        }
+        else
+        {
+            Directory.CreateDirectory(Path.Join(ApplicationPath, "Cache"));
+            var editors = await UnityHubService.GetEditors();
+            await File.WriteAllTextAsync(cacheFile, JsonSerializer.Serialize(editors));
+            UnityEditors = editors;
+        }
+    }
+    
+    public async Task InitialAsync()
+    {
+        var contents =
+            await App.Current.Client.GetStringAsync(
+                "https://github.com/CrossQuestBS/Mods/raw/refs/heads/main/ModdableGames.json");
+        var result = JsonSerializer.Deserialize<ModdableGame[]>(contents);
+        if (result is not null)
+            ModdableGames = result;
+
+        await GetUnityEditors();
+    }
+
     public override void OnFrameworkInitializationCompleted()
     {
         var services = new ServiceCollection();
-
+        InitialAsync();
 
         services.AddCommonServices();
 
@@ -42,6 +76,8 @@ public partial class App : Application
 
             // Creats a path if it does not exist!
             Directory.CreateDirectory(crossQuestAppPath);
+            
+            
 
             ApplicationPath = crossQuestAppPath;
 
@@ -58,7 +94,6 @@ public partial class App : Application
 
             StorageProvider = desktop.MainWindow.StorageProvider;
         }
-
         base.OnFrameworkInitializationCompleted();
     }
 
@@ -81,6 +116,10 @@ public partial class App : Application
     public IServiceProvider? Services { get; private set; }
 
     public IStorageProvider? StorageProvider { get; private set; }
+    
+    public ModdableGame[] ModdableGames { get; set; }
+    public UnityEditor[] UnityEditors { get; set; }
+    public HttpClient Client = new ();
 
 
     public ModdingConfig ModdingConfig { get; set; }
