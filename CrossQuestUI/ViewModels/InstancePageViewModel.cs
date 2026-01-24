@@ -13,6 +13,8 @@ namespace CrossQuestUI.ViewModels
 
         public ObservableCollection<ModInfo> SelectedMods { get; set; } = new ObservableCollection<ModInfo>(new List<ModInfo>());
 
+        [ObservableProperty]
+        private string _moddingStatus;
         
         [ObservableProperty]
         private ModdingInstance _moddingInstance;
@@ -23,6 +25,23 @@ namespace CrossQuestUI.ViewModels
         public void OnUnload()
         {
             SelectedMods.Clear();
+        }
+
+        [RelayCommand]
+        public async Task Compile()
+        {
+            ModdingStatus = "Compiling, this will take up to 10-30+ minutes.";
+            if (await ModdingInstance.CompileProject())
+            {
+                ModdingStatus = "Done compiling!";
+            }
+            else
+            {
+                ModdingStatus = "Failed to compile :(";
+            }
+            ModdingStatus = "Building APK...";
+            await ModdingInstance.BuildModdedApk();
+            ModdingStatus = "Done compiling and building apk!";
         }
         
         public async Task OnLoad()

@@ -37,6 +37,9 @@ namespace CrossQuestUI.Models
         private string BaseApkPath => Path.Join(ModdingPath, "BaseGame.apk");
         private string UnityEditorPath => Path.Join(UnityPath, "Contents/MacOS/Unity");
 
+        private string AndroidPlayer =>
+            Path.Join(Directory.GetParent(UnityPath).FullName, "PlaybackEngines/AndroidPlayer");
+
         public async Task<bool> SetupProject()
         {
             if (HasProject)
@@ -79,22 +82,33 @@ namespace CrossQuestUI.Models
 
         public async Task<bool> CompileProject()
         {
-            return await UnityEditorService.CompileProject(UnityPath, UnityProjectPath, ProjectBuildPath);
+            return await UnityEditorService.CompileProject(UnityEditorPath, UnityProjectPath, ProjectBuildPath);
         }
-
-        
         
         public async Task<bool> BuildModdedApk()
         {
             var tempPath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
-            var buildPath = Path.Join(tempPath, "build");
-            var baseGamePath = Path.Join(tempPath, "base-game");
-            
-            await QuestService.ExtractApk(ProjectBuildPath, buildPath);
-            await QuestService.ExtractApk(BaseApkPath, baseGamePath);
+            try
+            {
+                var buildPath = Path.Join(tempPath, "build");
+                var baseGamePath = Path.Join(tempPath, "base-game");
 
-            QuestService.CopyApkFiles(buildPath, baseGamePath);
-            await QuestService.BuildApk(baseGamePath, Path.Join(ModdingPath, $"ModdedGame_{Guid.NewGuid().ToString()}.apk"));
+                await QuestService.ExtractApk(ProjectBuildPath, buildPath);
+                await QuestService.ExtractApk(BaseApkPath, baseGamePath);
+
+                QuestService.CopyApkFiles(buildPath, baseGamePath);
+                var moddedGamePath = Path.Join(ModdingPath, $"ModdedGame_{Guid.NewGuid().ToString()}.apk");
+                await QuestService.BuildApk(baseGamePath, moddedGamePath);
+                await QuestService.SignApk(moddedGamePath, AndroidPlayer);
+                await QuestService.ClearCache(AndroidPlayer);
+            }
+            catch (Exception e)
+            {
+                Directory.Delete(tempPath, true);
+                Console.WriteLine(e);
+                return false;
+            }
+            Directory.Delete(tempPath, true);
             return true;
         }
     }

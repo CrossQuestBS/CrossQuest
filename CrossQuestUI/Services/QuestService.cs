@@ -9,6 +9,13 @@ namespace CrossQuestUI.Services
         private const string AdbPathTemplate = "{0}/SDK/platform-tools/adb";
         private const string ApkSignerTemplate = "{0}/SDK/build-tools/34.0.0/apksigner";
 
+        public static async Task ClearCache(string androidPlayerPath)
+        {
+            var adbPath = string.Format(AdbPathTemplate, androidPlayerPath);
+
+            await ProcessCallerService.ProcessAsync(adbPath, "shell pm clear com.beatgames.beatsaber");
+        }
+        
         public static async Task<bool> SignApk(string apkPath, string androidPlayerPath)
         {
             var temporaryPath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
