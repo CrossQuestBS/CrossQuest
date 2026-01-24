@@ -9,8 +9,6 @@
              Background="rgb(20, 20, 20)"
              Theme=""
              x:Class="CrossQuestUI.Views.NewInstancePageView">
-
-
     <Design.DataContext>
         <vm:NewInstancePageViewModel />
     </Design.DataContext>
@@ -84,6 +82,7 @@
                         Create Instance
                     </Button>
                 </Border>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding ModdingMessage}"></TextBlock>
             </DockPanel>
         </Border>
         <Border Margin="10" Padding="15" BorderBrush="rgb(40,40,40)" BorderThickness="1" CornerRadius="10">

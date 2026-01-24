@@ -8,6 +8,7 @@ namespace CrossQuestUI.Services
         {
             if (!Directory.Exists( toPath ))
                 Directory.CreateDirectory( toPath );
+            
             var files = Directory.GetFiles( fromPath );
             foreach (var file in files)
             {

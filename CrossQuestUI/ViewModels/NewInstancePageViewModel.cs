@@ -22,6 +22,7 @@ namespace CrossQuestUI.ViewModels
         public ObservableCollection<ModInfo> AvailableMods { get; set; } = new ObservableCollection<ModInfo>(new List<ModInfo>());
 
         
+        
         [ObservableProperty]
         private ModdableGame? _selectedGame;
         
@@ -35,6 +36,9 @@ namespace CrossQuestUI.ViewModels
         private string _gamePath = "";
         
         [ObservableProperty] private bool _hasFilledOut;
+
+        [ObservableProperty]
+        private string moddingMessage = "Waiting for all fields to be selected!";
 
         private HashSet<string> SelectModsId { get; set; } = new ();
         
@@ -69,10 +73,19 @@ namespace CrossQuestUI.ViewModels
         [RelayCommand]
         public async Task CreateInstance()
         {
+            if (!HasFilledOut)
+                return;
+
+            ModdingMessage = "Creating new Instance";
+            
+            HasFilledOut = false;
             var modsToInstall = AvailableMods.Where(it => SelectModsId.Contains(it.Id)).ToArray();
 
-            await ModdingInstanceService.CreateInstance(EditorPath, SelectedGame.Value.Version, QuestGame, GamePath,
+            var instance = await ModdingInstanceService.CreateInstance(EditorPath, SelectedGame.Value.Version, QuestGame, GamePath,
                 modsToInstall);
+
+            ModdingMessage = "Setting up Project, please wait...";
+            await instance.SetupProject();
             
             RoutingService.GoToDestination(RoutingService.RoutingDestination.Instances);
         }

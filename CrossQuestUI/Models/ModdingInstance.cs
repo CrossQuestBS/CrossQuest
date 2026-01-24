@@ -35,6 +35,7 @@ namespace CrossQuestUI.Models
         private string ProjectBuildPath => Path.Join(ModdingPath, "build.apk");
 
         private string BaseApkPath => Path.Join(ModdingPath, "BaseGame.apk");
+        private string UnityEditorPath => Path.Join(UnityPath, "Contents/MacOS/Unity");
 
         public async Task<bool> SetupProject()
         {
@@ -44,13 +45,16 @@ namespace CrossQuestUI.Models
             if (Mods.Length == 0)
                 return false;
 
-            bool createdProject = await UnityEditorService.CreateProject(UnityPath, UnityProjectPath);
+            bool createdProject = await UnityEditorService.CreateProject(UnityEditorPath, UnityProjectPath);
 
             if (!createdProject)
                 throw new Exception("Failed to create project");
 
-            var installBaseProject = await UnityEditorService.InstallBaseProject(Version,
-                Path.Join(ModdingPath, "BaseUnityProject"), UnityProjectPath);
+            var getModdableGame =
+                App.Current.ModdableGames.FirstOrDefault(it => it.Name == "Beat Saber" && it.Version == Version);
+            
+            var installBaseProject = await UnityEditorService.InstallBaseProject(
+                Path.Join(ModdingPath, "BaseUnityProject"), UnityProjectPath, getModdableGame.BaseProjectUrl);
 
             if (!installBaseProject)
                 throw new Exception("Failed to install base unity project");
@@ -66,6 +70,8 @@ namespace CrossQuestUI.Models
 
             GameAssemblyService.CopyAssemblies(GameAssembliesPath, Path.Join(UnityProjectPath, "Assets", "Plugins"),
                 assemblies);
+
+            Directory.CreateDirectory(Path.Join(ModdingPath, ".CrossQuest"));
             
             await File.WriteAllTextAsync(Path.Join(ModdingPath, ".CrossQuest", ".initialized"), "Exists!");
             return true;

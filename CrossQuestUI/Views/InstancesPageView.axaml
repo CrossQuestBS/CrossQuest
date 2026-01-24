@@ -81,7 +81,7 @@
                                                    Grid.Column="3" Text="{Binding ModdingPath}">
                                         </TextBlock>
                                         <Button Grid.Column="4" HorizontalAlignment="Right" BorderBrush="#CCCCCC"
-                                                BorderThickness="1"
+                                                BorderThickness="1" Click="Button_OnClick"
                                                 Background="rgb(56, 56, 56)">
                                             Modify
                                         </Button>

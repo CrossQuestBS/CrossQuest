@@ -14,10 +14,13 @@ namespace CrossQuestUI.Services
         {
             Instances,
             NewInstance,
+            Instance
         }
 
         private static InstancesPageViewModel _instancesPageViewModel = new();
         private static NewInstancePageViewModel _newInstancePageViewModel = new();
+        private static InstancePageViewModel _instancePageViewModel = new();
+
         
         public static event EventHandler<DestinationEventArgs> OnChangedPage;
 
@@ -30,6 +33,9 @@ namespace CrossQuestUI.Services
                     break;
                 case RoutingDestination.NewInstance:
                     OnChangedPage(null, new DestinationEventArgs(_newInstancePageViewModel));
+                    break;
+                case RoutingDestination.Instance:
+                    OnChangedPage(null, new DestinationEventArgs(_instancePageViewModel));
                     break;
             }
         }

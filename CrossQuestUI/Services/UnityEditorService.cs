@@ -14,11 +14,11 @@ namespace CrossQuestUI.Services
         
         
         
-        public static async Task<bool> InstallBaseProject(string version, string basePath, string unityProjectPath)
+        public static async Task<bool> InstallBaseProject(string basePath, string unityProjectPath, string downloadPath)
         {
             try
             {
-                var contents = await Client.GetByteArrayAsync($"https://github.com/CrossQuestBS/UnityBaseProject/archive/refs/tags/{version}.zip");
+                var contents = await Client.GetByteArrayAsync(downloadPath);
                 var zipFile = basePath + ".zip";
                 
                 await File.WriteAllBytesAsync(zipFile, contents);
@@ -32,15 +32,17 @@ namespace CrossQuestUI.Services
                 {
                     var destFolder = Path.Join(unityProjectPath, subFolder);
                     var srcFolder = Path.Join(basePath, subFolder);
-                    Directory.Delete(destFolder, true);
+                    Directory.Delete(destFolder, true); 
                     DirectoryExtensions.CopyFolder(srcFolder, destFolder);
                 }
                 
-                Directory.Delete(basePath);
+                Directory.Delete(basePath, true);
                 return true;
             }
             catch (Exception e)
             {
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.Message);
                 return false;
             } 
         }

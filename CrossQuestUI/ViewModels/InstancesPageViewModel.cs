@@ -26,7 +26,7 @@ namespace CrossQuestUI.ViewModels
                 ModdingInstances.Add(instance);
             }
         }
-
+        
         [RelayCommand]
         public void CreateInstance()
         {

@@ -11,6 +11,8 @@ namespace CrossQuestUI.Services
     {
         private static string InstancePath => Path.Join(App.Current?.ApplicationPath, "Instances");
         
+        public static ModdingInstance? SelectedInstance { get; set; }
+        
         public static async Task<ModdingInstance[]> GetInstanceList()
         {
             List<ModdingInstance> instances = [];
