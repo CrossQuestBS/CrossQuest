@@ -74,6 +74,13 @@ namespace CrossQuestUI.Models
             GameAssemblyService.CopyAssemblies(GameAssembliesPath, Path.Join(UnityProjectPath, "Assets", "Plugins"),
                 assemblies);
 
+            var publicizedAssemblies = Mods.SelectMany(it => it.Publicize)
+                .Distinct().ToArray();
+            
+            Console.WriteLine("Unique publicizedAssemblies: " + string.Join(",", publicizedAssemblies));
+            
+            GameAssemblyService.CopyPublicizedAssemblies(GameAssembliesPath, UnityProjectPath, publicizedAssemblies);
+
             Directory.CreateDirectory(Path.Join(ModdingPath, ".CrossQuest"));
             
             await File.WriteAllTextAsync(Path.Join(ModdingPath, ".CrossQuest", ".initialized"), "Exists!");
@@ -83,6 +90,35 @@ namespace CrossQuestUI.Models
         public async Task<bool> CompileProject()
         {
             return await UnityEditorService.CompileProject(UnityEditorPath, UnityProjectPath, ProjectBuildPath);
+        }
+        
+        public async Task<bool> UpdateApkAndStartGame()
+        {
+            var tempPath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
+            try
+            {
+                var buildPath = Path.Join(tempPath, "build");
+                var baseGamePath = Path.Join(tempPath, "base-game");
+
+                await QuestService.ExtractApk(ProjectBuildPath, buildPath);
+                await QuestService.ExtractApk(BaseApkPath, baseGamePath);
+
+                QuestService.CopyApkFiles(buildPath, baseGamePath);
+                var moddedGamePath = Path.Join(tempPath, $"ModdedGame_{Guid.NewGuid().ToString()}.apk");
+                await QuestService.BuildApk(baseGamePath, moddedGamePath);
+                await QuestService.SignApk(moddedGamePath, AndroidPlayer);
+                await QuestService.ClearCache(AndroidPlayer);
+                await QuestService.InstallAPK(AndroidPlayer, moddedGamePath);
+                await QuestService.StartGame(AndroidPlayer);
+            }
+            catch (Exception e)
+            {
+                Directory.Delete(tempPath, true);
+                Console.WriteLine(e);
+                return false;
+            }
+            Directory.Delete(tempPath, true);
+            return true;
         }
         
         public async Task<bool> BuildModdedApk()

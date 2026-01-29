@@ -74,6 +74,10 @@
                             Compile
                         </Button>
                         <Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
+                                HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Command="{Binding UpdateAndStartGameCommand}">
+                            Update and Start Game
+                        </Button>
+                        <Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
                                 HorizontalContentAlignment="Center" HorizontalAlignment="Stretch">
                             Install Modded
                         </Button>
