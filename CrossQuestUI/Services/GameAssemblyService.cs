@@ -13,6 +13,10 @@ namespace CrossQuestUI.Services
     public static class GameAssemblyService
     {
         private static readonly HttpClient Client = new ();
+        private static readonly AssemblyPublicizerOptions AssemblyPublicizerOptions = new AssemblyPublicizerOptions
+        {
+            IncludeOriginalAttributesAttribute = false
+        };
 
         public static async Task<Dictionary<string, string[]>> GetAssembliesMapping(string version)
         {
@@ -33,7 +37,7 @@ namespace CrossQuestUI.Services
         private static void AddPublicizedAssembly(string originalFilePath, string publicizedPath, string pluginsPath)
         {
             File.Delete(pluginsPath);
-            AssemblyPublicizer.Publicize(originalFilePath, pluginsPath);
+            AssemblyPublicizer.Publicize(originalFilePath, pluginsPath, AssemblyPublicizerOptions);
             File.Copy(originalFilePath, publicizedPath, true);
         }
 
