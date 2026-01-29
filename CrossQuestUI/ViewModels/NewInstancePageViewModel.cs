@@ -87,7 +87,8 @@ namespace CrossQuestUI.ViewModels
             ModdingMessage = "Setting up Project, please wait...";
             await instance.SetupProject();
             
-            RoutingService.GoToDestination(RoutingService.RoutingDestination.Instances);
+            ModdingInstanceService.SelectedInstance = instance;
+            RoutingService.GoToDestination(RoutingService.RoutingDestination.Instance);
         }
 
         public void CheckedMod(string name, bool isChecked)
