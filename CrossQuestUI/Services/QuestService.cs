@@ -16,6 +16,20 @@ namespace CrossQuestUI.Services
             await ProcessCallerService.ProcessAsync(adbPath, "shell pm clear com.beatgames.beatsaber");
         }
         
+        public static async Task StartGame(string androidPlayerPath)
+        {
+            var adbPath = string.Format(AdbPathTemplate, androidPlayerPath);
+
+            await ProcessCallerService.ProcessAsync(adbPath, "shell am start com.beatgames.beatsaber/com.unity3d.player.UnityPlayerGameActivity");
+        }
+        
+        public static async Task InstallAPK(string androidPlayerPath, string apk)
+        {
+            var adbPath = string.Format(AdbPathTemplate, androidPlayerPath);
+
+            await ProcessCallerService.ProcessAsync(adbPath, $"install {apk}");
+        }
+        
         public static async Task<bool> SignApk(string apkPath, string androidPlayerPath)
         {
             var temporaryPath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());

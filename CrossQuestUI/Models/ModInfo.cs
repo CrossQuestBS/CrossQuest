@@ -7,5 +7,6 @@ namespace CrossQuestUI.Models
         public string Description { get; set; }
         public string DownloadUrl { get; set; }
         public bool Required { get; set; }
+        public string[] Publicize { get; set; }
     }
 }

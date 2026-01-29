@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using BepInEx.AssemblyPublicizer;
 
 namespace CrossQuestUI.Services
 {
@@ -20,6 +21,54 @@ namespace CrossQuestUI.Services
             var result = JsonSerializer.Deserialize<Dictionary<string, string[]>>(contents);
 
             return result ?? throw new Exception("Failed to deserialize assemblies mapping!");
+        }
+
+        private static void RevertPublicizedAssembly(string originalFilePath, string publicizedPath, string pluginsPath)
+        {
+            File.Delete(publicizedPath);
+            File.Delete(pluginsPath);
+            File.Copy(originalFilePath, pluginsPath);
+        }
+
+        private static void AddPublicizedAssembly(string originalFilePath, string publicizedPath, string pluginsPath)
+        {
+            File.Delete(pluginsPath);
+            AssemblyPublicizer.Publicize(originalFilePath, pluginsPath);
+            File.Copy(originalFilePath, publicizedPath, true);
+        }
+
+        public static void CopyPublicizedAssemblies(string assembliesPath, string unityProjectPath,
+            string[] publicizedAssemblies)
+        {
+            var publicizedPath = Path.Join(unityProjectPath, "Publicized");
+
+            Directory.CreateDirectory(publicizedPath);
+
+            var publicizedExisting = Directory.GetFiles(publicizedPath).Select(Path.GetFileName).Where(it => it.EndsWith(".dll")).ToArray();
+
+            var revertedAssemblies = publicizedExisting.Where(it => !publicizedAssemblies.Contains(it)).ToString();
+            
+            
+            var pluginPath = Path.Join(unityProjectPath, "Assets", "Plugins");
+
+            foreach (var directory in Directory.GetDirectories(pluginPath))
+            {
+                foreach (var dllFile in Directory.GetFiles(directory))
+                {
+                    var fileName = Path.GetFileName(dllFile);
+                    var assembliesFile = Path.Join(assembliesPath, fileName);
+                    var publicizedFilePath = Path.Join(publicizedPath, fileName);
+
+                    if (revertedAssemblies != null && revertedAssemblies.Contains(fileName))
+                    {
+                        RevertPublicizedAssembly(assembliesFile, publicizedFilePath, dllFile);
+                        continue;
+                    }
+
+                    if (!publicizedAssemblies.Contains(fileName)) continue;
+                    AddPublicizedAssembly(assembliesFile, publicizedFilePath, dllFile);
+                }
+            }
         }
 
         public static void CopyAssemblies(string assembliesPath, string pluginsPath, Dictionary<string, string[]> assemblies, bool overrideFiles = false)

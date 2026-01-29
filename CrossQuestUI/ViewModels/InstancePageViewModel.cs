@@ -44,13 +44,19 @@ namespace CrossQuestUI.ViewModels
             ModdingStatus = "Done compiling and building apk!";
         }
         
+        [RelayCommand]
+        public async Task UpdateAndStartGame()
+        {
+            ModdingStatus = "Building APK...";
+            await ModdingInstance.UpdateApkAndStartGame();
+            ModdingStatus = "Done Building and installing apk!";
+        }
+
+        
         public async Task OnLoad()
         {
             ReadOnlyMods = true;
-            if (ModdingInstanceService.SelectedInstance != null)
-                ModdingInstance = ModdingInstanceService.SelectedInstance;
-            else
-                ModdingInstance = (await ModdingInstanceService.GetInstanceList())[0];
+            ModdingInstance = ModdingInstanceService.SelectedInstance ?? (await ModdingInstanceService.GetInstanceList())[0];
 
             foreach (var mod in ModdingInstance.Mods)
             {
