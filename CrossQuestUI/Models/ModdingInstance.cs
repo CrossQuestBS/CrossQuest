@@ -35,10 +35,9 @@ namespace CrossQuestUI.Models
         private string ProjectBuildPath => Path.Join(ModdingPath, "build.apk");
 
         private string BaseApkPath => Path.Join(ModdingPath, "BaseGame.apk");
-        private string UnityEditorPath => Path.Join(UnityPath, "Contents/MacOS/Unity");
+        private string UnityEditorPath => OSPathService.UnityExecutable(UnityPath);
 
-        private string AndroidPlayer =>
-            Path.Join(Directory.GetParent(UnityPath).FullName, "PlaybackEngines/AndroidPlayer");
+        private string AndroidPlayer => OSPathService.AndroidPlayer(UnityPath);
 
         public async Task<bool> SetupProject()
         {
