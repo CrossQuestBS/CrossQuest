@@ -6,26 +6,22 @@ namespace CrossQuestUI.Services
 {
     public static class QuestService
     {
-        private const string AdbPathTemplate = "{0}/SDK/platform-tools/adb";
-        private const string ApkSignerTemplate = "{0}/SDK/build-tools/34.0.0/apksigner";
-
         public static async Task ClearCache(string androidPlayerPath)
         {
-            var adbPath = string.Format(AdbPathTemplate, androidPlayerPath);
 
+            var adbPath = OSPathService.AdBPath(androidPlayerPath);
             await ProcessCallerService.ProcessAsync(adbPath, "shell pm clear com.beatgames.beatsaber");
         }
         
         public static async Task StartGame(string androidPlayerPath)
         {
-            var adbPath = string.Format(AdbPathTemplate, androidPlayerPath);
-
+            var adbPath = OSPathService.AdBPath(androidPlayerPath);
             await ProcessCallerService.ProcessAsync(adbPath, "shell am start com.beatgames.beatsaber/com.unity3d.player.UnityPlayerGameActivity");
         }
         
         public static async Task InstallAPK(string androidPlayerPath, string apk)
         {
-            var adbPath = string.Format(AdbPathTemplate, androidPlayerPath);
+            var adbPath = OSPathService.AdBPath(androidPlayerPath);
 
             await ProcessCallerService.ProcessAsync(adbPath, $"install {apk}");
         }
@@ -45,7 +41,7 @@ namespace CrossQuestUI.Services
             ResourceManager.ExtractAssetFile(keyFile, keyPath);
             ResourceManager.ExtractAssetFile(certFile, certPath);
 
-            var apkSignerPath = string.Format(ApkSignerTemplate, androidPlayerPath);
+            var apkSignerPath = OSPathService.ApkSignerPath(androidPlayerPath);
             var result = await ProcessCallerService.ProcessAsync(
                 apkSignerPath, 
                 $"sign -v --key \"{keyPath}\" --cert \"{certPath}\" \"{apkPath}\"");
@@ -62,7 +58,7 @@ namespace CrossQuestUI.Services
 
         public static async Task<bool> UpdateGamePermissions(string packageId, string androidPlayerPath)
         {
-            var adbPath = string.Format(AdbPathTemplate, androidPlayerPath);
+            var adbPath = OSPathService.AdBPath(androidPlayerPath);
             return await ProcessCallerService.ProcessAsync(adbPath,
                 $"shell appops set --uid {packageId} MANAGE_EXTERNAL_STORAGE allow");
         }
