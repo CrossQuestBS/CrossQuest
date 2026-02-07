@@ -41,7 +41,7 @@
                                 <Setter Property="BorderBrush" Value="#ED9294"></Setter>
                             </Style>
                         </StackPanel.Styles>
-                        <Border CornerRadius="3" BorderThickness="2" Classes.Verified="false" Classes.Invalid="true" MaxWidth="600">
+                        <!--<Border CornerRadius="3" BorderThickness="2" Classes.Verified="false" Classes.Invalid="true" MaxWidth="600">
                             <TextBlock VerticalAlignment="Center"
                                        TextAlignment="Center"
                                        FontSize="16"
@@ -60,15 +60,15 @@
                                        Classes.Invalid="false"
                                        Text="Quest Connected"
                                        TextWrapping="Wrap" />
-                        </Border>
+                        </Border> -->
                     </StackPanel>
                 </Border>
                 <Border DockPanel.Dock="Bottom" Padding="10">
                     <StackPanel VerticalAlignment="Bottom" Spacing="10" Margin="10 20">
-                        <Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
+                        <!--<Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
                                  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch">
                             Update mods
-                        </Button>
+                        </Button> -->
                         <Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
                                 HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Command="{Binding CompileCommand}">
                             Compile
@@ -77,10 +77,10 @@
                                 HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Command="{Binding UpdateAndStartGameCommand}">
                             Update and Start Game
                         </Button>
-                        <Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
+                        <!-- <Button Foreground="White" Padding="20 10" Background="rgb(0, 100, 200)" VerticalAlignment="Bottom"
                                 HorizontalContentAlignment="Center" HorizontalAlignment="Stretch">
                             Install Modded
-                        </Button>
+                        </Button> -->
                     </StackPanel>
                 </Border>
             </DockPanel>
