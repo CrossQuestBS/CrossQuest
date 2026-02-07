@@ -27,7 +27,7 @@
                                     HorizontalAlignment="Stretch">
                                 Game Instance
                             </Button>
-                            <Button Background="Transparent" Foreground="White" Padding="20 10"
+                            <!-- <Button Background="Transparent" Foreground="White" Padding="20 10"
                                     VerticalAlignment="Bottom" HorizontalContentAlignment="Center"
                                     HorizontalAlignment="Stretch">
                                 Game Versions
@@ -36,7 +36,7 @@
                                     VerticalAlignment="Bottom" HorizontalContentAlignment="Center"
                                     HorizontalAlignment="Stretch">
                                 Game Backups
-                            </Button>
+                            </Button> -->
                         </StackPanel>
                        
                     </Border>
@@ -55,10 +55,10 @@
                             <TextBlock VerticalAlignment="Center" Grid.Column="3">Installation</TextBlock>
                             <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right"
                                         Spacing="10">
-                                <Button BorderBrush="#CCCCCC" BorderThickness="1" Background="rgb(56, 56, 56)"
+                                <!--<Button BorderBrush="#CCCCCC" BorderThickness="1" Background="rgb(56, 56, 56)"
                                         Grid.Column="0">
                                     Backup
-                                </Button>
+                                </Button> -->
                                 <Button BorderBrush="#CCCCCC" BorderThickness="1" Background="rgb(56, 56, 56)"
                                         Grid.Column="1" Command="{Binding CreateInstance}">
                                     New Instance
