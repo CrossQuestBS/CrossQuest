@@ -63,22 +63,10 @@ namespace CrossQuestUI.Models
 
             Directory.CreateDirectory(ModsFolderPath);
 
-            var downloadMods = await ModInstallerService.DownloadMods(Mods, ModsFolderPath);
-
-            if (!downloadMods)
-                throw new Exception("Failed to download mods");
-
             var assemblies = await GameAssemblyService.GetAssembliesMapping(Version);
 
             GameAssemblyService.CopyAssemblies(GameAssembliesPath, Path.Join(UnityProjectPath, "Assets", "Plugins"),
                 assemblies);
-
-            var publicizedAssemblies = Mods.SelectMany(it => it.Publicize)
-                .Distinct().ToArray();
-            
-            Console.WriteLine("Unique publicizedAssemblies: " + string.Join(",", publicizedAssemblies));
-            
-            GameAssemblyService.CopyPublicizedAssemblies(GameAssembliesPath, UnityProjectPath, publicizedAssemblies);
 
             Directory.CreateDirectory(Path.Join(ModdingPath, ".CrossQuest"));
             
