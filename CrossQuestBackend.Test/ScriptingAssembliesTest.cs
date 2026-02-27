@@ -2,7 +2,7 @@
 
 namespace CrossQuestBackend.Test;
 
-public class Tests
+public class ScriptingAssembliesTests
 {
     private ScriptingAssemblies _scriptingAssemblies;
     private const string ExpectedValue = "{\"names\":[\"Unity.Assembly.dll\",\"Unity.Assembly2.dll\",\"User.Assembly.dll\",\"User.Assembly2.dll\"],\"types\":[2,2,16,16]}";
