@@ -17,7 +17,6 @@ namespace CrossQuestUI.Services
             await proc.WaitForExitAsync();
 
             return proc.ExitCode == 0;
-
         }
 
         public static async Task<bool> ProcessAsync(string fileName, string arguments, string expectedOutputText)
