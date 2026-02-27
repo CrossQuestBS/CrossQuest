@@ -35,4 +35,8 @@
         <SubType>Code</SubType>
       </Compile>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CrossQuestBackend\CrossQuestBackend.csproj" />
+    </ItemGroup>
 </Project>

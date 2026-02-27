@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossQuestUI", "CrossQuestUI\CrossQuestUI.csproj", "{F15D456A-233C-4934-BA10-2696ED979AF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossQuestBackend", "CrossQuestBackend\CrossQuestBackend.csproj", "{8B2BD7AE-1FEA-463F-A5CC-224FDFEFDA63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossQuestBackend.Test", "CrossQuestBackend.Test\CrossQuestBackend.Test.csproj", "{B01189A4-E7A5-44BC-8388-13FA57AC43F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{F15D456A-233C-4934-BA10-2696ED979AF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F15D456A-233C-4934-BA10-2696ED979AF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F15D456A-233C-4934-BA10-2696ED979AF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B2BD7AE-1FEA-463F-A5CC-224FDFEFDA63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B2BD7AE-1FEA-463F-A5CC-224FDFEFDA63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B2BD7AE-1FEA-463F-A5CC-224FDFEFDA63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B2BD7AE-1FEA-463F-A5CC-224FDFEFDA63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B01189A4-E7A5-44BC-8388-13FA57AC43F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B01189A4-E7A5-44BC-8388-13FA57AC43F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B01189A4-E7A5-44BC-8388-13FA57AC43F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B01189A4-E7A5-44BC-8388-13FA57AC43F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
