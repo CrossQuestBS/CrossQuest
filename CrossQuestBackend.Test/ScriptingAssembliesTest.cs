@@ -5,8 +5,8 @@ namespace CrossQuestBackend.Test;
 public class Tests
 {
     private ScriptingAssemblies _scriptingAssemblies;
-    private readonly string _expectedValue = "{\"names\":[\"Unity.Assembly.dll\",\"Unity.Assembly2.dll\",\"User.Assembly.dll\",\"User.Assembly2.dll\"],\"types\":[2,2,16,16]}";
-    
+    private const string ExpectedValue = "{\"names\":[\"Unity.Assembly.dll\",\"Unity.Assembly2.dll\",\"User.Assembly.dll\",\"User.Assembly2.dll\"],\"types\":[2,2,16,16]}";
+
     [SetUp]
     public void Setup()
     {
@@ -16,8 +16,20 @@ public class Tests
     }
 
     [Test]
+    public void ShouldProperlyInsertTypes()
+    {
+        Assert.That(_scriptingAssemblies.types, Is.EqualTo([2, 2, 16, 16]));
+    }
+    
+    [Test]
+    public void ShouldProperlyInsertNames()
+    {
+        Assert.That(_scriptingAssemblies.names, Is.EqualTo(["Unity.Assembly.dll", "Unity.Assembly2.dll", "User.Assembly.dll", "User.Assembly2.dll"]));
+    }
+
+    [Test]
     public void ShouldConvertToJson()
     {
-        Assert.That(_scriptingAssemblies.ToJson(), Is.EqualTo(_expectedValue));
+        Assert.That(_scriptingAssemblies.ToJson(), Is.EqualTo(ExpectedValue));
     }
 }
