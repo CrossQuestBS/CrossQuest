@@ -12,11 +12,11 @@ public class IL2CPPBuilder : AsyncBuildProcess
         var cppDirectory = Path.Join(directory, "Build/Generated");
         var outputPath = Path.Join(directory, "Build/Native/arm64-v8a/libil2cpp.so");
         var cachedDirectory = Path.Join(directory, "Build/Cache");
-        var baseLibPath = Path.Join(androidPlayer,"Variations/il2cpp/Release/StaticLibs/arm64-v8a");
+        var baseLibPath = Path.Join(androidPlayer, "Variations/il2cpp/Release/StaticLibs/arm64-v8a");
 
         // /Applications/Unity/Hub/Editor/6000.0.40f1/Unity.app/Contents/il2cpp
         BuildExecutablePath = Path.Join(il2cppPath, "build/deploy/il2cpp");
-        
+
         // TODO: Figure out what is best arguments to use here
         BuildArguments = new()
         {
@@ -28,16 +28,15 @@ public class IL2CPPBuilder : AsyncBuildProcess
             { "directory", directory },
             { "generatedcppdir", cppDirectory },
             { "compile-cpp", "" },
-            { "outputpath", outputPath},
+            { "outputpath", outputPath },
             { "cachedirectory", cachedDirectory },
             { "tool-chain-path", ndkPath },
             { "verbose", "" },
-            { "emit-null-checks", ""},
-            { "enable-array-bounds-check", ""},
-            { "emit-null-checks", ""},
-            { "print-command-line", ""},
-            { "baselib-directory", baseLibPath},
+            { "emit-null-checks", "" },
+            { "enable-array-bounds-check", "" },
+            { "emit-null-checks", "" },
+            { "print-command-line", "" },
+            { "baselib-directory", baseLibPath },
         };
     }
 }
-
