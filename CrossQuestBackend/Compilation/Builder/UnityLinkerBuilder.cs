@@ -5,6 +5,8 @@ namespace CrossQuestBackend.Compilation.Builder;
 
 public class UnityLinkerBuilder : AsyncBuildProcess
 {
+    private string ExecutablePath(string il2cppPath) => Path.Join(il2cppPath, "build/deploy/UnityLinker");
+    private string ModuleAssetsPath(string androidPlayer) => Path.Join(androidPlayer, "modules.asset");
     public UnityLinkerBuilder(
         string il2cppPath,
         List<string> allowedAssemblies,
@@ -16,7 +18,7 @@ public class UnityLinkerBuilder : AsyncBuildProcess
         string editorDataFile
     )
     {
-        BuildExecutablePath = Path.Join(il2cppPath, "build/deploy/UnityLinker");
+        BuildExecutablePath = ExecutablePath(il2cppPath);
 
         BuildArguments = new()
         {
@@ -25,7 +27,7 @@ public class UnityLinkerBuilder : AsyncBuildProcess
             { "dotnetprofile", "unityaot-linux" },
             { "dotnetruntime", "Il2Cpp" },
             { "platform", "Android" },
-            { "engine-modules-asset-file", Path.Join(androidPlayer, "modules.asset") },
+            { "engine-modules-asset-file", ModuleAssetsPath(androidPlayer) },
             { "use-editor-options", "" },
             { "editor-data-file", editorDataFile }
         };
