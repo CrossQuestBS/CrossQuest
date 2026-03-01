@@ -7,17 +7,16 @@ namespace CrossQuestBackend.Compilation.Builder;
 
 public class IL2CPPBuilder : AsyncBuildProcess
 {
-    public IL2CPPBuilder(string directory, string ndkPath, string androidPlayer, string il2cppPath)
+    private string GeneratedPath(string outputPath) => Path.Join(outputPath, "Build/Generated");
+    private string OutputFilePath(string outputPath) => Path.Join(outputPath, "Build/Native/arm64-v8a/libil2cpp.so");
+    private string CachedPath(string directory) => Path.Join(directory, "Cache");
+    private string BaseLibPath(string androidPlayer) => Path.Join(androidPlayer, "Variations/il2cpp/Release/StaticLibs/arm64-v8a");
+    private string ExecutablePath(string il2cppPath) => Path.Join(il2cppPath, "build/deploy/il2cpp");
+    
+    public IL2CPPBuilder(string directory, string outputPath, string ndkPath, string androidPlayer, string il2cppPath)
     {
-        var cppDirectory = Path.Join(directory, "Build/Generated");
-        var outputPath = Path.Join(directory, "Build/Native/arm64-v8a/libil2cpp.so");
-        var cachedDirectory = Path.Join(directory, "Build/Cache");
-        var baseLibPath = Path.Join(androidPlayer, "Variations/il2cpp/Release/StaticLibs/arm64-v8a");
+        BuildExecutablePath = ExecutablePath(il2cppPath);
 
-        // /Applications/Unity/Hub/Editor/6000.0.40f1/Unity.app/Contents/il2cpp
-        BuildExecutablePath = Path.Join(il2cppPath, "build/deploy/il2cpp");
-
-        // TODO: Figure out what is best arguments to use here
         BuildArguments = new()
         {
             { "configuration", "Release" },
@@ -26,17 +25,17 @@ public class IL2CPPBuilder : AsyncBuildProcess
             { "dotnetprofile", "unityaot-linux" },
             { "convert-to-cpp", "" },
             { "directory", directory },
-            { "generatedcppdir", cppDirectory },
+            { "generatedcppdir", GeneratedPath(outputPath) },
             { "compile-cpp", "" },
-            { "outputpath", outputPath },
-            { "cachedirectory", cachedDirectory },
+            { "outputpath", OutputFilePath(outputPath) },
+            { "cachedirectory", CachedPath(directory) },
             { "tool-chain-path", ndkPath },
             { "verbose", "" },
             { "emit-null-checks", "" },
             { "enable-array-bounds-check", "" },
             { "emit-null-checks", "" },
             { "print-command-line", "" },
-            { "baselib-directory", baseLibPath },
+            { "baselib-directory", BaseLibPath(androidPlayer) },
         };
     }
 }
