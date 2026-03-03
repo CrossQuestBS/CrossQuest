@@ -21,11 +21,12 @@ public class AsyncBuildProcessTests
             return;
         }
             
-        _buildProcess.BuildArguments.Add("test", "");
-        _buildProcess.BuildArguments.Add("dir", "found");
-        _buildProcess.BuildArguments.Add("", "");
+        _buildProcess.BuildArguments.Add(new Tuple<string, string>("test", ""));
+        _buildProcess.BuildArguments.Add(new Tuple<string, string>("dir", "found"));
+        _buildProcess.BuildArguments.Add(new Tuple<string, string>("dir", "found2"));
+        _buildProcess.BuildArguments.Add(new Tuple<string, string>("", ""));
 
-        var expected = "--test --dir=found";
+        var expected = "--test --dir=found --dir=found2";
         var actual = _buildProcess.ToArgumentsString();
         Assert.That(actual, Is.EqualTo(expected));
     }

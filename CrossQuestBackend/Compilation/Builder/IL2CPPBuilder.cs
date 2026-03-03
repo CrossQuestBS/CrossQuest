@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -13,29 +14,29 @@ public class IL2CPPBuilder : AsyncBuildProcess
     private string BaseLibPath(string androidPlayer) => Path.Join(androidPlayer, "Variations/il2cpp/Release/StaticLibs/arm64-v8a");
     private string ExecutablePath(string il2cppPath) => Path.Join(il2cppPath, "build/deploy/il2cpp");
     
-    public IL2CPPBuilder(string directory, string outputPath, string ndkPath, string androidPlayer, string il2cppPath)
+    public IL2CPPBuilder(string assemblies, string directory, string outputPath, string ndkPath, string androidPlayer, string il2cppPath)
     {
         BuildExecutablePath = ExecutablePath(il2cppPath);
 
         BuildArguments = new()
         {
-            { "configuration", "Release" },
-            { "platform", "Android" },
-            { "architecture", "ARM64" },
-            { "dotnetprofile", "unityaot-linux" },
-            { "convert-to-cpp", "" },
-            { "directory", directory },
-            { "generatedcppdir", GeneratedPath(outputPath) },
-            { "compile-cpp", "" },
-            { "outputpath", OutputFilePath(outputPath) },
-            { "cachedirectory", CachedPath(directory) },
-            { "tool-chain-path", ndkPath },
-            { "verbose", "" },
-            { "emit-null-checks", "" },
-            { "enable-array-bounds-check", "" },
-            { "emit-null-checks", "" },
-            { "print-command-line", "" },
-            { "baselib-directory", BaseLibPath(androidPlayer) },
+            new Tuple<string,string>("configuration", "Release" ),
+            new Tuple<string,string>("platform", "Android" ),
+            new Tuple<string,string>("architecture", "ARM64" ),
+            new Tuple<string,string>("dotnetprofile", "unityaot-linux" ),
+            new Tuple<string,string>("convert-to-cpp", "" ),
+            new Tuple<string,string>("directory", assemblies ),
+            new Tuple<string,string>("generatedcppdir", GeneratedPath(outputPath) ),
+            new Tuple<string,string>("compile-cpp", "" ),
+            new Tuple<string,string>("outputpath", OutputFilePath(outputPath) ),
+            new Tuple<string,string>("cachedirectory", CachedPath(directory) ),
+            new Tuple<string,string>("tool-chain-path", ndkPath ),
+            new Tuple<string,string>("verbose", "" ),
+            new Tuple<string,string>("emit-null-checks", "" ),
+            new Tuple<string,string>("enable-array-bounds-check", "" ),
+            new Tuple<string,string>("emit-null-checks", "" ),
+            new Tuple<string,string>("print-command-line", "" ),
+            new Tuple<string,string>("baselib-directory", BaseLibPath(androidPlayer) ),
         };
     }
 }

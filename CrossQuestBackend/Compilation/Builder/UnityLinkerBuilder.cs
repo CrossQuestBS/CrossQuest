@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,39 +13,41 @@ public class UnityLinkerBuilder : AsyncBuildProcess
         List<string> allowedAssemblies,
         List<string> includeLinks,
         List<string> unityRootAssemblies,
+        List<string> includeDirectory,
         string outDirectory,
-        string includeDirectory,
-        string androidPlayer,
-        string editorDataFile
-    )
+        string androidPlayer)
     {
         BuildExecutablePath = ExecutablePath(il2cppPath);
 
         BuildArguments = new()
         {
-            { "out", outDirectory },
-            { "include-directory", includeDirectory },
-            { "dotnetprofile", "unityaot-linux" },
-            { "dotnetruntime", "Il2Cpp" },
-            { "platform", "Android" },
-            { "engine-modules-asset-file", ModuleAssetsPath(androidPlayer) },
-            { "use-editor-options", "" },
-            { "editor-data-file", editorDataFile }
+            new Tuple<string, string>("out", outDirectory),
+            new Tuple<string, string>("dotnetprofile", "unityaot-linux" ),
+            new Tuple<string, string>("dotnetruntime", "Il2Cpp" ),
+            new Tuple<string, string>("platform", "Android" ),
+            new Tuple<string, string>("engine-modules-asset-file", ModuleAssetsPath(androidPlayer) ),
+            new Tuple<string, string>("allowed-assemblies-only", ""),
+            new Tuple<string, string>("use-editor-options", "")
         };
+
+        foreach (var directory in includeDirectory)
+        {
+            BuildArguments.Add(new Tuple<string, string>("include-directory", directory));
+        }
 
         foreach (var allowedAssembly in allowedAssemblies)
         {
-            BuildArguments.Add("allowed-assembly", allowedAssembly);
+            BuildArguments.Add(new Tuple<string, string>("allowed-assembly", allowedAssembly));
         }
 
         foreach (var includeLink in includeLinks)
         {
-            BuildArguments.Add("include-link-xml", includeLink);
+            BuildArguments.Add(new Tuple<string, string>("include-link-xml", includeLink));
         }
 
         foreach (var unityRootAssembly in unityRootAssemblies)
         {
-            BuildArguments.Add("include-unity-root-assembly", unityRootAssembly);
+            BuildArguments.Add(new Tuple<string, string>("include-unity-root-assembly", unityRootAssembly));
         }
     }
 }
