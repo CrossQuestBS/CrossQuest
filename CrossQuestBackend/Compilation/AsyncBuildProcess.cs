@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -6,7 +7,7 @@ namespace CrossQuestBackend.Compilation;
 
 public class AsyncBuildProcess
 {
-    public Dictionary<string, string> BuildArguments = new();
+    public List<Tuple<string, string>> BuildArguments = new();
     public string BuildExecutablePath = "";
 
     public string ToArgumentsString()
