@@ -4,12 +4,12 @@ using CrossQuestUI.Models;
 
 namespace CrossQuestUI.Services
 {
-    public class ProcessCaller : IProcessCaller
+    public static class ProcessCallerService
     {
-        public async Task<bool> ProcessAsync(string fileName, string arguments)
+        public static async Task<bool> ProcessAsync(string fileName, string arguments, bool useShellExecute = false)
         {
             
-            var startInfo = new ProcessStartInfo() { FileName = fileName, Arguments = arguments, CreateNoWindow = true}; 
+            var startInfo = new ProcessStartInfo() { FileName = fileName, Arguments = arguments, CreateNoWindow = true, UseShellExecute = useShellExecute}; 
             using var proc = new Process();
             proc.StartInfo = startInfo;
             proc.Start();
@@ -17,10 +17,9 @@ namespace CrossQuestUI.Services
             await proc.WaitForExitAsync();
 
             return proc.ExitCode == 0;
-
         }
 
-        public async Task<bool> ProcessAsync(string fileName, string arguments, string expectedOutputText)
+        public static async Task<bool> ProcessAsync(string fileName, string arguments, string expectedOutputText)
         {
             var startInfo = new ProcessStartInfo() { FileName = fileName, Arguments = arguments, RedirectStandardOutput = true, CreateNoWindow = true}; 
             using var proc = new Process();
@@ -34,7 +33,7 @@ namespace CrossQuestUI.Services
             return result.Contains(expectedOutputText);
         }
 
-        public async Task<string> ProcessOutputAsync(string fileName, string arguments)
+        public static async Task<string> ProcessOutputAsync(string fileName, string arguments)
         {
             var startInfo = new ProcessStartInfo() { FileName = fileName, Arguments = arguments, RedirectStandardOutput = true, CreateNoWindow = true}; 
             using var proc = new Process();
@@ -43,8 +42,6 @@ namespace CrossQuestUI.Services
 
             var result = await proc.StandardOutput.ReadToEndAsync();
             
-            await proc.WaitForExitAsync();
-
             return result;
         }
     }

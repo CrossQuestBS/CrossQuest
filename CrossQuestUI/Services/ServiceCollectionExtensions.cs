@@ -8,30 +8,14 @@ namespace CrossQuestUI.Services
     {
         public static void AddDesignServices(this IServiceCollection collection)
         {
-            collection.AddSingleton<IModdingInstanceService, ModdingInstanceServiceMock>();
-            collection.AddTransient<IntroductionViewModel>();
+            collection.AddTransient<InstancesPageViewModel>();
 
         }
         
         public static void AddCommonServices(this IServiceCollection collection)
         {
-            collection.AddSingleton<IModdingService, ModdingService>();
-            collection.AddSingleton<IStreamLogger, StreamLogger>();
-            collection.AddSingleton<IDownloader, Downloader>();
-            collection.AddSingleton<IGithubDownloader, GithubDownloader>();
-            collection.AddSingleton<IAndroidService, AndroidService>();
-            collection.AddSingleton<IFilesService, FilesService>();
-            collection.AddSingleton<IUnityEditor, UnityEditor>();
-            collection.AddSingleton<IProcessCaller, ProcessCaller>();
-            collection.AddSingleton<IModdingInstanceService, ModdingInstanceService>();
-
             collection.AddTransient<MainWindowViewModel>();
-            collection.AddTransient<IntroductionViewModel>();
-            collection.AddTransient<ConfigSetupViewModel>();
-            collection.AddTransient<VerificationViewModel>();
-            collection.AddTransient<BaseFileDownloadViewModel>();
-            collection.AddTransient<InitialModSetupViewModel>();
-            collection.AddTransient<ModdingProcessViewModel>();
+            collection.AddTransient<InstancesPageViewModel>();
             collection.AddTransient<DashboardViewModel>();
         }
     }

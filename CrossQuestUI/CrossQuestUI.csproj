@@ -10,6 +10,7 @@
     <ItemGroup>
         <Folder Include="Controls\" />
         <AvaloniaResource Include="Assets\**"/>
+        <Folder Include="Services\Design\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,14 +24,19 @@
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="BepInEx.AssemblyPublicizer" Version="0.5.0-beta.2" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\InitialModSetupView.axaml.cs">
-        <DependentUpon>InitialModSetupView.axaml</DependentUpon>
+      <Compile Update="Views\InstancePageView.axaml.cs">
+        <DependentUpon>InstancePageView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\CrossQuestBackend\CrossQuestBackend.csproj" />
     </ItemGroup>
 </Project>
