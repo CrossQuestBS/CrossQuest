@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -7,30 +8,15 @@ namespace CrossQuestBackend.Compilation;
 
 public class AsyncBuildProcess
 {
-    public List<Tuple<string, string>> BuildArguments = new();
+    public List<string> BuildArguments = new();
     public string BuildExecutablePath = "";
-
-    public string ToArgumentsString()
+    private string _executeArguments
     {
-        var sb = new StringBuilder();
-        foreach (var (key, value) in BuildArguments)
-        {
-            if (key.Length == 0)
-                continue;
-
-            sb.Append($"--{key.Trim()}");
-
-            if (value.Length > 0)
-                sb.Append($"={value.Trim()}");
-
-            sb.Append(' ');
-        }
-
-        return sb.ToString().Trim();
+        get => String.Join(" ", BuildArguments);
     }
 
     public async Task<bool> Execute()
     {
-        return await ProcessCaller.ProcessAsync(BuildExecutablePath, ToArgumentsString());
+        return await ProcessCaller.ProcessAsync(BuildExecutablePath, _executeArguments);
     }
 }

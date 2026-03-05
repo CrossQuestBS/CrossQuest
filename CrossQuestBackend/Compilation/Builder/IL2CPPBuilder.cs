@@ -20,23 +20,23 @@ public class IL2CPPBuilder : AsyncBuildProcess
 
         BuildArguments = new()
         {
-            new Tuple<string,string>("configuration", "Release" ),
-            new Tuple<string,string>("platform", "Android" ),
-            new Tuple<string,string>("architecture", "ARM64" ),
-            new Tuple<string,string>("dotnetprofile", "unityaot-linux" ),
-            new Tuple<string,string>("convert-to-cpp", "" ),
-            new Tuple<string,string>("directory", assemblies ),
-            new Tuple<string,string>("generatedcppdir", GeneratedPath(outputPath) ),
-            new Tuple<string,string>("compile-cpp", "" ),
-            new Tuple<string,string>("outputpath", OutputFilePath(outputPath) ),
-            new Tuple<string,string>("cachedirectory", CachedPath(directory) ),
-            new Tuple<string,string>("tool-chain-path", ndkPath ),
-            new Tuple<string,string>("verbose", "" ),
-            new Tuple<string,string>("emit-null-checks", "" ),
-            new Tuple<string,string>("enable-array-bounds-check", "" ),
-            new Tuple<string,string>("emit-null-checks", "" ),
-            new Tuple<string,string>("print-command-line", "" ),
-            new Tuple<string,string>("baselib-directory", BaseLibPath(androidPlayer) ),
+            "--configuration=Release",
+            "--platform=Android",
+            "--architecture=ARM64",
+            "--dotnetprofile=unityaot-linux",
+            "--convert-to-cpp",
+            $"--directory={assemblies}",
+            $"--generatedcppdir={GeneratedPath(outputPath)}",
+            "--compile-cpp",
+            $"--outputpath={OutputFilePath(outputPath)}",
+            $"--cachedirectory={CachedPath(directory)}",
+            $"--tool-chain-path={ndkPath}",
+            "--verbose",
+            "--emit-null-checks",
+            "--enable-array-bounds-check",
+            "--emit-null-checks",
+            "--print-command-line",
+            $"--baselib-directory={BaseLibPath(androidPlayer)}"
         };
     }
 }
