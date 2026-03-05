@@ -21,33 +21,33 @@ public class UnityLinkerBuilder : AsyncBuildProcess
 
         BuildArguments = new()
         {
-            new Tuple<string, string>("out", outDirectory),
-            new Tuple<string, string>("dotnetprofile", "unityaot-linux" ),
-            new Tuple<string, string>("dotnetruntime", "Il2Cpp" ),
-            new Tuple<string, string>("platform", "Android" ),
-            new Tuple<string, string>("engine-modules-asset-file", ModuleAssetsPath(androidPlayer) ),
-            new Tuple<string, string>("allowed-assemblies-only", ""),
-            new Tuple<string, string>("use-editor-options", "")
+            $"--out={outDirectory}",
+            "--dotnetprofile=unityaot-linux",
+            "--dotnetruntime=Il2Cpp",
+            "--platform=Android",
+            $"--engine-modules-asset-file={ModuleAssetsPath(androidPlayer)}",  
+            "--allowed-assemblies-only",
+            "--use-editor-options"
         };
 
         foreach (var directory in includeDirectory)
         {
-            BuildArguments.Add(new Tuple<string, string>("include-directory", directory));
+            BuildArguments.Add($"--include-directory={directory}");
         }
 
         foreach (var allowedAssembly in allowedAssemblies)
         {
-            BuildArguments.Add(new Tuple<string, string>("allowed-assembly", allowedAssembly));
+            BuildArguments.Add($"--allowed-assembly={allowedAssembly}");
         }
 
         foreach (var includeLink in includeLinks)
         {
-            BuildArguments.Add(new Tuple<string, string>("include-link-xml", includeLink));
+            BuildArguments.Add($"--include-link-xml={includeLink}");
         }
 
         foreach (var unityRootAssembly in unityRootAssemblies)
         {
-            BuildArguments.Add(new Tuple<string, string>("include-unity-root-assembly", unityRootAssembly));
+            BuildArguments.Add($"--include-unity-root-assembly={unityRootAssembly}");
         }
     }
 }
