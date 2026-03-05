@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Compilation;
+namespace CrossQuestBackend.Unity.Compilation;
 
 public class ScriptingAssemblies
 {
