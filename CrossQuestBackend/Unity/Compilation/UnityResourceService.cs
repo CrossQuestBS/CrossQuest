@@ -1,17 +1,18 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using CrossQuestBackend.Unity.Models;
 
 namespace CrossQuestBackend.Unity.Compilation;
 
-public class ScriptingAssemblies
+public static class UnityResourceService
 {
     private const int UnityAssemblyType = 2;
     private const int UserAssemblyType = 16;
-        
-    public ScriptingAssemblies(List<string> unityAssemblies, List<string> userAssemblies)
+
+    public static ScriptingAssemblies GenerateScriptingAssemblies(List<string> unityAssemblies,
+        List<string> userAssemblies)
     {
-        names = [];
-        types = [];
+        List<string> names = [];
+        List<int> types = [];
 
         foreach (var assembly in unityAssemblies)
         {
@@ -24,13 +25,7 @@ public class ScriptingAssemblies
             names.Add(assembly);
             types.Add(UserAssemblyType);
         }
-    }
 
-    public List<string> names;
-    public List<int> types;
-
-    public string ToJson()
-    {
-        return JsonConvert.SerializeObject(this);
+        return new ScriptingAssemblies(names, types);
     }
 }
