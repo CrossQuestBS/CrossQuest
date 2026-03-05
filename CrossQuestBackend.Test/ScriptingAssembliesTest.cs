@@ -1,4 +1,5 @@
 ﻿using CrossQuestBackend.Compilation;
+using CrossQuestBackend.Unity.Compilation;
 
 namespace CrossQuestBackend.Test;
 
