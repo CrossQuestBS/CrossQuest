@@ -10,4 +10,16 @@
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Unity\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Unity\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Unity\**" />
+    </ItemGroup>
+
 </Project>
