@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 
 namespace CrossQuestBackend.Oculus;
 
+// TODO:
+// - Add OBB Downloader (Requires GraphQL call)
 public static class OculusDownloader
 {
     private static readonly HttpClient Client = new();
