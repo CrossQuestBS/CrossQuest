@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using CrossQuestBackend.Unity.Models;
-using Newtonsoft.Json;
 
 namespace CrossQuestBackend.Unity.Compilation;
 
@@ -14,24 +12,18 @@ public static class UnityResources
     {
         const int UnityAssemblyType = 2;
         const int UserAssemblyType = 16;
-        
         List<string> names = [];
         List<int> types = [];
-
-        foreach (var assembly in unityAssemblies.Select(Path.GetFileName))
+        
+        foreach (var unityAssembly in unityAssemblies)
         {
-            if (assembly is null)
-                continue;
-            names.Add(assembly);
+            names.Add(Path.GetFileName(unityAssembly));
             types.Add(UnityAssemblyType);
         }
 
-        foreach (var assembly in userAssemblies.Select(Path.GetFileName))
+        foreach (var userAssembly in userAssemblies)
         {
-            if (assembly is null)
-                continue;
-            
-            names.Add(assembly);
+            names.Add(Path.GetFileName(userAssembly));
             types.Add(UserAssemblyType);
         }
 
