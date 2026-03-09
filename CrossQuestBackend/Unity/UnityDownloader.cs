@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Formats.Tar;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -19,10 +21,10 @@ public static class UnityDownloader
     private static async Task DownloadUnityRelease(string tag, string directory, string fileName)
     {
         var responseMessage = await Client.GetAsync($"{GithubReleaseUrl}/{tag}/{fileName}");
-
-        await using FileStream outputFileStream = File.Create(Path.Join(directory, fileName));
         
-        await responseMessage.Content.CopyToAsync(outputFileStream);
+        await using GZipStream gZipStream = new GZipStream(await responseMessage.Content.ReadAsStreamAsync(), CompressionMode.Decompress);
+        
+        await TarFile.ExtractToDirectoryAsync(gZipStream, directory, true);
     }
 
     public static async Task UnityData(string tag, OSPlatform platform, string directory) => 
