@@ -13,20 +13,17 @@ namespace CrossQuestBackend.Oculus;
 public static class OculusDownloader
 {
     private static readonly HttpClient Client = new();
-
-    private const string OculusDomain = "https://securecdn.oculus.com";
-
     private static string ManifestUrl(string manifestId, string accessToken) =>
-        $"{OculusDomain}/binaries/download/?id={manifestId}&access_token={accessToken}&get_manifest=1";
+        $"https://securecdn.oculus.com/binaries/download/?id={manifestId}&access_token={accessToken}&get_manifest=1";
 
     private static string SegmentUrl(string binaryId, string segmentSha256, string accessToken) =>
-        $"{OculusDomain}/binaries/segment/?access_token={accessToken}&binary_id={binaryId}&segment_sha256={segmentSha256}";
+        $"https://securecdn.oculus.com/binaries/segment/?access_token={accessToken}&binary_id={binaryId}&segment_sha256={segmentSha256}";
 
     private static string QuestURL(string binaryId, string accessToken) =>
-        $"{OculusDomain}/binaries/download/?id={binaryId}&access_token={accessToken}";
+        $"https://securecdn.oculus.com/binaries/download/?id={binaryId}&access_token={accessToken}";
 
 
-    public static async Task<Manifest?> GetManifest(string manifestId, string accessToken)
+    public static async Task<Manifest?> Manifest(string manifestId, string accessToken)
     {
         var manifestStream = await Client.GetStreamAsync(ManifestUrl(manifestId, accessToken));
 
@@ -43,10 +40,10 @@ public static class OculusDownloader
         return new JsonSerializer().Deserialize<Manifest>(reader);
     }
 
-    public static async Task<bool> DownloadRiftGame(RiftDownloadConfig downloadConfig, string accessToken,
+    public static async Task<bool> RiftGame(RiftDownloadConfig downloadConfig, string accessToken,
         string downloadPath)
     {
-        var manifest = await GetManifest(downloadConfig.BinaryId, accessToken);
+        var manifest = await Manifest(downloadConfig.BinaryId, accessToken);
 
         if (manifest is null)
             return false;
@@ -74,7 +71,7 @@ public static class OculusDownloader
         return true;
     }
 
-    public static async Task DownloadQuestGame(QuestDownloadConfig config, string accessToken, string path)
+    public static async Task QuestGame(QuestDownloadConfig config, string accessToken, string path)
     {
         var responseMessage = await Client.GetAsync(
             QuestURL(config.BinaryId, accessToken)
