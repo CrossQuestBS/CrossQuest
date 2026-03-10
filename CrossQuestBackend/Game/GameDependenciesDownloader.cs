@@ -14,10 +14,7 @@ public static class GameDependenciesDownloader
 
     private const string GithubReleaseUrl =
         "https://github.com/CrossQuestBS/BeatSaberDependencies/releases/download";
-
-    private static string GetPlatformString(OSPlatform platform) =>
-        platform == OSPlatform.OSX ? "osx" : platform == OSPlatform.Linux ? "linux" : "windows";
-
+    
     private static async Task DownloadGithubRelease(string tag, string directory, string fileName)
     {
         var responseMessage = await Client.GetAsync($"{GithubReleaseUrl}/{tag}/{fileName}");
