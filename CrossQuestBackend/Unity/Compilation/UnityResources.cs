@@ -47,6 +47,6 @@ public static class UnityResources
             arguments.Add("-a=" + file);
         }
         
-        await ProcessCaller.ProcessAsync(dotnetRunPath, String.Join(" ", arguments), true);
+        await ProcessCaller.ProcessAsync(dotnetRunPath, String.Join(" ", arguments));
     }
 }

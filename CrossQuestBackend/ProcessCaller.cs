@@ -1,4 +1,7 @@
 using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace CrossQuestBackend;
@@ -7,7 +10,14 @@ public static class ProcessCaller
 {
     public static async Task<bool> ProcessAsync(string fileName, string arguments, bool useShellExecute = false)
     {
-
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            if (Path.Exists(fileName + ".exe"))
+            {
+                fileName += ".exe";
+            }
+        }
+        
         var startInfo = new ProcessStartInfo()
             { FileName = fileName, Arguments = arguments, CreateNoWindow = true, UseShellExecute = useShellExecute };
         using var proc = new Process();
