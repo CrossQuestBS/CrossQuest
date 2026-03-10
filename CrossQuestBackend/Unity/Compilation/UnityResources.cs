@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CrossQuestBackend.Unity.Models;
 
 namespace CrossQuestBackend.Unity.Compilation;
@@ -14,7 +15,7 @@ public static class UnityResources
         const int UserAssemblyType = 16;
         List<string> names = [];
         List<int> types = [];
-        
+
         foreach (var unityAssembly in unityAssemblies)
         {
             names.Add(Path.GetFileName(unityAssembly));
@@ -28,5 +29,24 @@ public static class UnityResources
         }
 
         return new ScriptingAssemblies(names, types);
+    }
+
+    public static async Task RuntimeInitializeOnLoads(string linkerOutputPath, string unityDataPath, string outputPath)
+    {
+        var dotnetRunPath = Path.Join(unityDataPath, "netcorerun/netcorerun");
+        var arguments = new List<string>()
+        {
+            Path.Join(unityDataPath, "BuildPlayerDataGenerator", "BuildPlayerDataGenerator.exe"),
+            "-s=" + linkerOutputPath,
+            "-rn=\"RuntimeInitializeOnLoads.json\"",
+            "-o=" + outputPath
+        };
+        
+        foreach (var file in Directory.GetFiles(linkerOutputPath).Where(it => it.EndsWith(".dll")))
+        {
+            arguments.Add("-a=" + file);
+        }
+        
+        await ProcessCaller.ProcessAsync(dotnetRunPath, String.Join(" ", arguments), true);
     }
 }
