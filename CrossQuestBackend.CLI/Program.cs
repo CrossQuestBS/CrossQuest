@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using CrossQuestBackend.Game;
 using CrossQuestBackend.Unity.Compilation;
 using CrossQuestBackend.Unity.Models;
 

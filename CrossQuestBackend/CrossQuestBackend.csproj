@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Android\" />
       <Folder Include="Game\Models\" />
     </ItemGroup>
 
