@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace CrossQuestBackend.Oculus.Models;
 
 public record RiftDownloadConfig(
-    string AppId,
-    string Version,
-    string BinaryId,
-    List<string> FilesToDownload
+    [JsonProperty("appId")] string AppId,
+    [JsonProperty("version")] string Version,
+    [JsonProperty("binaryId")] string BinaryId,
+    [JsonProperty("filesToDownload")] List<string> FilesToDownload
 );

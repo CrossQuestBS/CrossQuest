@@ -1,4 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
+
+using CrossQuestBackend;
+using CrossQuestBackend.Game;
 using CrossQuestBackend.Game.Models;
 using CrossQuestBackend.Oculus.Models;
 using CrossQuestBackend.Unity;
@@ -24,16 +27,16 @@ var assemblies = scriptingAssemblies.AsJson();
 
 Console.WriteLine(assemblies);
 
-var unityInstance = new UnityInstance("6000.0.40f1");
-var instance = new GameInstance("com.beatgames.beatsaber", "1.42.2", "6000.0.40f1");
+var games = await ResourceDownloader.Games();
 
-var unityVersion = new UnityVersionInfo("6000.0.40f1", "6000.0.40f1-1.1");
-var latestGameVersion = new GameVersionInfo("1.42.2", unityVersion, "1.42.2-1.0");
-var versions = new List<GameVersionInfo>
-{
-    latestGameVersion
-};
-var gameInfo = new GameInfo("BeatSaber", versions);
 
-Console.WriteLine(gameInfo);
-Console.WriteLine(JsonConvert.SerializeObject(gameInfo));
+var beatSaber = games.First(it => it.Id == "com.beatgames.beatsaber");
+var version = beatSaber.ModdableVersionList[0];
+
+// Create new instances
+var unityInstance = new UnityInstance(version.UnityVersion);
+var instance = new GameInstance(beatSaber.Id, version, version.UnityVersion.Version);
+
+await unityInstance.DownloadFiles();
+await instance.DownloadFiles();
+

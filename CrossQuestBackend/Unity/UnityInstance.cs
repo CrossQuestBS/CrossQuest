@@ -1,18 +1,35 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
+using CrossQuestBackend.Oculus;
+using CrossQuestBackend.Oculus.Models;
 
 namespace CrossQuestBackend.Unity;
 
 public class UnityInstance
 {
-    public string Version { get; set; }
+    public UnityVersionInfo Version { get; set; }
     public string InstancePath { get; set; }
     
-    public UnityInstance(string version)
+    public UnityInstance(UnityVersionInfo version)
     {
         Version = version; 
-        InstancePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CrossQuest", "Unity", Version);
+        InstancePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CrossQuest", "Unity", Version.Version);
         Directory.CreateDirectory(InstancePath);
+    }
+
+    public async Task DownloadFiles()
+    {
+        if (!Directory.Exists(Path.Join(InstancePath, "AndroidPlayer")))
+            await UnityDownloader.AndroidPlayer(Version.ReleaseTag, InstancePath);
+        
+        if (!Directory.Exists(Path.Join(InstancePath, "UnityData")))
+            await UnityDownloader.UnityData(Version.ReleaseTag, PlatformService.CurrentPlatform, InstancePath);
+    }
+    
+    public async Task RunUnityLinker()
+    {
+        
     }
 
 }

@@ -6,5 +6,7 @@ namespace CrossQuestBackend.Game.Models;
 public record GameVersionInfo(
     [JsonProperty("version")] string Version,
     [JsonProperty("unityVersion")] UnityVersionInfo UnityVersion,
-    [JsonProperty("releaseTag")] string ReleaseTag
+    [JsonProperty("releaseTag")] string ReleaseTag,
+    [JsonProperty("riftConfig")] RiftDownloadConfig RiftConfig,
+    [JsonProperty("questConfig")] QuestDownloadConfig QuestConfig
 );

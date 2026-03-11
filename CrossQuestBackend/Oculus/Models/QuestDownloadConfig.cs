@@ -1,7 +1,9 @@
+using Newtonsoft.Json;
+
 namespace CrossQuestBackend.Oculus.Models;
 
 public record QuestDownloadConfig(
-    string AppId,
-    string Version,
-    string BinaryId
+    [JsonProperty("appId")] string AppId,
+    [JsonProperty("version")] string Version,
+    [JsonProperty("binaryId")] string BinaryId
 );
