@@ -11,4 +11,10 @@
       <ProjectReference Include="..\CrossQuestBackend\CrossQuestBackend.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="IPA.BuildProcess">
+        <HintPath>..\Dependencies\IPA.BuildProcess.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>
