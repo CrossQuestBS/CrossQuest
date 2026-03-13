@@ -9,8 +9,23 @@ namespace CrossQuestBackend.Unity.Compilation;
 
 public static class UnityLinker
 {
+    private static void RemoveBuildFiles(UnityInstance unityInstance)
+    {
+        foreach (var filePath in Directory.GetFiles(Path.Join(unityInstance.InstancePath, "Temp", "StagingArea")))
+        {
+            if (filePath.Contains("IPA") && filePath.Contains("Build"))
+                File.Delete(filePath);
+
+            if (filePath.Contains("CrossAccord") && filePath.Contains("Build"))
+                File.Delete(filePath);
+        }
+
+    }
+    
     public static async Task StartCompile(UnityInstance unityInstance, GameInstance gameInstance)
     {
+        RemoveBuildFiles(unityInstance);
+        
         var executable = Path.Join(unityInstance.InstancePath, "UnityData/il2cpp/build/deploy/UnityLinker");
         var outputPath = Path.Join(gameInstance.InstancePath, "Build/ManagedStripped");
     
