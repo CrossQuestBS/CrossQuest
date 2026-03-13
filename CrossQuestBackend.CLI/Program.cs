@@ -10,22 +10,8 @@ using IPA.BuildProcess.Interfaces;
 
 Console.WriteLine("Hello, World!");
 
-List<string> unityAssemblies = new List<string>()
-{
-    "/Hello/UnityAssembly.dll"
-};
-
-List<string> userAssemblies = new List<string>()
-{
-    "/Hello/UserAssembly.dll"
-};
 
 // TODO: Properly fix this
-var scriptingAssemblies = UnityResources.ScriptingAssemblies(unityAssemblies, userAssemblies);
-
-var assemblies = scriptingAssemblies.AsJson();
-
-Console.WriteLine(assemblies);
 
 var games = await ResourceDownloader.Games();
 
@@ -93,18 +79,46 @@ foreach (var filePath in Directory.GetFiles(Path.Join(unityInstance.InstancePath
 {
     if (filePath.Contains("IPA") && filePath.Contains("Build"))
         File.Delete(filePath);
-    
+
     if (filePath.Contains("CrossAccord") && filePath.Contains("Build"))
         File.Delete(filePath);
 }
 
+List<string> unityAssemblies = new List<string>();
+
+List<string> userAssemblies = new List<string>();
+
 await UnityLinker.StartCompile(unityInstance, instance);
+
+var libFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Libs")).Where(it => it.EndsWith(".dll"));
+var modFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Mods")).Where(it => it.EndsWith(".dll"));
+var beatsaberFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus/Beat Saber_Data/Managed")).Where(it => it.EndsWith(".dll"));
+
+userAssemblies.AddRange(libFiles);
+userAssemblies.AddRange(modFiles);
+userAssemblies.AddRange(beatsaberFiles);
+
+var stagingAreaFileNames = Directory
+    .GetFiles(Path.Join(unityInstance.InstancePath, "Temp", "StagingArea"))
+    .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
+var unityAssembliesFileNames = Directory.GetFiles(Path.Join(instance.InstancePath, "UnityDependencies/dependencies/Managed"))
+    .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it)).Where(it => stagingAreaFileNames.Contains(it));
+
+unityAssemblies.AddRange(unityAssembliesFileNames);
+
+var scriptingAssemblies = UnityResources.ScriptingAssemblies(unityAssemblies, userAssemblies);
+
+var assemblies = scriptingAssemblies.AsJson();
+
 
 // TODO: Create ScriptingAssemblies.json
 // TODO: Create RuntimeInitializeOnLoads.json
 
 await il2cppCompile.Compile(unityInstance, instance, "/Users/maribell/QPM-RS/ndk/29.0.14206865+preview-0");
 
+Console.WriteLine(assemblies);
+
+// TODO: Need a way to get boot.config
 // TODO: use apktool to unextract downloaded apk
 // TODO: Patch apk with compiled files
 // TODO: use apktool to extract apk
@@ -118,49 +132,63 @@ void GenerateLinkFile(GameInstance instance)
 {
     List<string> filesToSave = new();
 
-    var libFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Libs")).Where(it => !it.Contains("Build") && it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
-    var modFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Mods")).Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
-    var gameFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus/Beat Saber_Data/Managed")).Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
+    var libFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Libs"))
+        .Where(it => !it.Contains("Build") && it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
+    var modFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Mods")).Where(it => it.EndsWith(".dll"))
+        .Select(it => Path.GetFileName(it));
+    var gameFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus/Beat Saber_Data/Managed"))
+        .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
     
-    
+    var playerAssemblies = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus/Beat Saber_Data/Managed"))
+        .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
+
+    var unityFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "UnityDependencies/dependencies/Managed"))
+        .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
+
     filesToSave.AddRange(libFiles);
     filesToSave.AddRange(modFiles);
     filesToSave.AddRange(gameFiles);
+    filesToSave.AddRange(unityFiles);
+    filesToSave.AddRange(playerAssemblies);
     filesToSave.AddRange(
-    new List<string>(){ "UnityEngine.TextCoreFontEngineModule",
-      "Unity.Addressables",
-      "Unity.ResourceManager",
-      "Unity.InputSystem",
-      "Unity.TextMeshPro",
-      "Unity.Timeline",
-      "UnityEngine.CoreModule",
-      "UnityEngine.AnimationModule",
-      "UnityEngine.AudioModule",
-      "UnityEngine.ClothModule",
-      "UnityEngine.DirectorModule",
-      "UnityEngine.ParticleSystemModule",
-      "UnityEngine.PhysicsModule",
-      "UnityEngine.SpatialTracking",
-      "UnityEngine.TextRenderingModule",
-      "UnityEngine.UI",
-      "UnityEngine.UIModule",
-      "UnityEngine.VideoModule",
-      "Unity.Burst.Unsafe",
-      "Unity.Burst",
-      "UnityEngine.TLSModule",
-      "UnityEngine.UmbraModule",
-      "UnityEngine.MarshallingModule",
-      "UnityEngine.MultiplayerModule"
-    });
+        new List<string>()
+        {
+            "UnityEngine.TextCoreFontEngineModule",
+            "Unity.Addressables",
+            "Unity.ResourceManager",
+            "Unity.InputSystem",
+            "Unity.TextMeshPro",
+            "Unity.Timeline",
+            "UnityEngine.CoreModule",
+            "UnityEngine.AnimationModule",
+            "UnityEngine.AudioModule",
+            "UnityEngine.ClothModule",
+            "UnityEngine.DirectorModule",
+            "UnityEngine.ParticleSystemModule",
+            "UnityEngine.PhysicsModule",
+            "UnityEngine.SpatialTracking",
+            "UnityEngine.TextRenderingModule",
+            "UnityEngine.UI",
+            "UnityEngine.UIModule",
+            "UnityEngine.VideoModule",
+            "Unity.Burst.Unsafe",
+            "Unity.Burst",
+            "UnityEngine.TLSModule",
+            "UnityEngine.UmbraModule",
+            "UnityEngine.MarshallingModule",
+            "UnityEngine.MultiplayerModule",
+            "UnityEngine.CoreModule",
+        });
     // TODO: Add libs + mods needed
-    
-    var xmlElements = string.Join("\n", filesToSave.Select(it => $"<assembly fullname=\"{it.Replace(".dll", "")}\" preserve=\"all\"/>"));
+
+    var xmlElements = string.Join("\n",
+        filesToSave.Select(it => $"<assembly fullname=\"{it.Replace(".dll", "")}\" preserve=\"all\"/>"));
 
     var xmlFile = @$"<linker>
     {xmlElements}
 </linker>
 ";
-    
+
     File.WriteAllText(Path.Join(instance.InstancePath, "Build", "GameLink.xml"), xmlFile);
 }
 
@@ -176,12 +204,12 @@ void CopyFilesToStaging(UnityInstance unityInstanceParam, GameInstance gameInsta
     Directory.CreateDirectory(stagingArea);
 
     List<string> assemblyPaths =
-    [
+    [        
+        Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/PlayerScriptAssemblies"),
+        Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/Managed"),
         Path.Join(gameInstance.InstancePath, "Libs"),
         Path.Join(gameInstance.InstancePath, "Mods"),
         Path.Join(gameInstance.InstancePath, "Oculus/Beat Saber_Data/Managed"),
-        Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/PlayerScriptAssemblies"),
-        Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/Managed"),
         Path.Join(unityInstanceParam.InstancePath, "UnityData/unityaot-linux"),
         Path.Join(unityInstanceParam.InstancePath, "UnityData/unityaot-linux/Facades")
     ];
@@ -196,31 +224,35 @@ void CopyFilesToStaging(UnityInstance unityInstanceParam, GameInstance gameInsta
     }
 }
 
-void LoadCallbacks(List<string> list, List<string> assemblyPaths1, List<IPostLinkerBuild> postLinkerBuilds1, List<IPreLinkerBuild> preLinkerBuilds1)
+void LoadCallbacks(List<string> list, List<string> assemblyPaths1, List<IPostLinkerBuild> postLinkerBuilds1,
+    List<IPreLinkerBuild> preLinkerBuilds1)
 {
     foreach (var assemblyPath in list)
     {
         foreach (var assemblyFile in Directory.GetFiles(assemblyPath).Where(it => it.EndsWith(".dll")))
         {
             var parent = Directory.GetParent(assemblyFile).FullName;
-        
+
             AssemblyHelper.InitializeResolver(parent, assemblyPaths1.ToArray());
 
             using var assembly = AssemblyHelper.ReadAssemblyInMemory(assemblyFile);
-        
-            var callbacks = assembly.MainModule.Types.Where(it => it.HasInterfaces && it.Interfaces.Any(it => it.InterfaceType.FullName == "IPA.BuildProcess.Interfaces.IBuildCallback")).Where(it => !it.IsInterface).ToArray();
+
+            var callbacks = assembly.MainModule.Types
+                .Where(it => it.HasInterfaces && it.Interfaces.Any(it =>
+                    it.InterfaceType.FullName == "IPA.BuildProcess.Interfaces.IBuildCallback"))
+                .Where(it => !it.IsInterface).ToArray();
 
             if (callbacks.Length == 0)
                 continue;
-        
+
             var assemblies2 = AssemblyLoadContext.Default.Assemblies;
             var reflectionAssembly = assemblies2.First(it => it.FullName == assembly.FullName);
 
-        
+
             foreach (var callbackType in callbacks)
             {
                 var type = reflectionAssembly.GetType(callbackType.FullName);
-            
+
                 IBuildCallback buildCallback = (IBuildCallback)Activator.CreateInstance(type);
 
                 switch (buildCallback)

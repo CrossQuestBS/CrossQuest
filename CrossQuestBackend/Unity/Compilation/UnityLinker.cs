@@ -21,6 +21,8 @@ public static class UnityLinker
         List<string> includeLinks =
         [
             Path.Join(gameInstance.InstancePath, "Build", "GameLink.xml"),
+            Path.Join(gameInstance.InstancePath, "Resources", "link.xml"),
+            Path.Join(gameInstance.InstancePath, "Resources", "link_old.xml"),
             Path.Join(unityInstance.InstancePath, "AndroidPlayer/AndroidNativeLink.xml"),
         ];
 
