@@ -1,12 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Runtime.Loader;
-using CrossQuestBackend;
+﻿using CrossQuestBackend;
 using CrossQuestBackend.Game;
 using CrossQuestBackend.Unity;
 using CrossQuestBackend.Unity.Compilation;
 using CrossQuestBackend.Unity.Models;
-using IPA.BuildProcess.Interfaces;
 
 #region Setup Beat Saber + Unity
 var games = await ResourceDownloader.Games();
@@ -21,8 +17,8 @@ await instance.DownloadFiles();
 await instance.DownloadGameFiles("..._token_here");
 #endregion
 
-
-
+// TODO: Download mods
+// TODO: Setup Android tooling + ndk if not installed
 
 #region PreIL2CPPCompilation
 List<string> assemblyPaths =
@@ -75,9 +71,7 @@ userAssemblies.AddRange(libFiles);
 userAssemblies.AddRange(modFiles);
 userAssemblies.AddRange(beatsaberFiles);
 
-var stagingAreaFileNames = Directory
-    .GetFiles(Path.Join(unityInstance.InstancePath, "Temp", "StagingArea"))
-    .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
+var stagingAreaFileNames = stagingFiles.Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
 var unityAssembliesFileNames = Directory.GetFiles(Path.Join(instance.InstancePath, "UnityDependencies/dependencies/Managed"))
     .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it)).Where(it => stagingAreaFileNames.Contains(it));
 
