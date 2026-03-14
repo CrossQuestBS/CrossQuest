@@ -8,15 +8,13 @@ namespace CrossQuestBackend.Unity.Compilation;
 
 public static class il2cppCompile
 {
-    public static async Task Compile(UnityInstance unityInstance, GameInstance gameInstance, string ndkPath)
+    public static async Task<bool> Compile(UnityInstance unityInstance, GameInstance gameInstance, string ndkPath)
     {
 
         var outDirectory = Path.Join(gameInstance.InstancePath, "Build/Native/arm64-v8a/libil2cpp.so");
         var directory = Path.Join(gameInstance.InstancePath, "Build/ManagedStripped");
         var cache = Path.Join(gameInstance.InstancePath, "Build/Cache");
         var generated = Path.Join(gameInstance.InstancePath, "Build/Generated");
-
-
         
         var executable = Path.Join(unityInstance.InstancePath, "UnityData/il2cpp/build/deploy/il2cpp");
 
@@ -41,6 +39,6 @@ public static class il2cppCompile
             $"--baselib-directory=\"{Path.Join(unityInstance.InstancePath, "AndroidPlayer/StaticLibs")}\"",
         };
         
-        await ProcessCaller.ProcessAsync(executable, String.Join(" ", arguments));
+        return await ProcessCaller.ProcessAsync(executable, String.Join(" ", arguments), false);
     }
 }

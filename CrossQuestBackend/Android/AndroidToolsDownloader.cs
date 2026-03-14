@@ -18,13 +18,21 @@ public static class AndroidToolsDownloader
     {
         var androidFolder = GetAndroidFolder();
 
-        var ndkDirectory = Path.Join(androidFolder, "android-ndk-r27d");
+        var ndkDirectory = Path.Join(androidFolder, "android-ndk-r29");
         
+        // TODO: This doees not work, instead get the files from DMG
+        // This was supposed to be hack but did not work
+        File.Delete(Path.Join(ndkDirectory, "toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"));
+        File.CreateSymbolicLink(
+            Path.Join(ndkDirectory, "toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"),
+            Path.Join(ndkDirectory, "toolchains/llvm/prebuilt/darwin-x86_64/bin/clang-21"));
+        
+            
         if (Directory.Exists(ndkDirectory))
             return ndkDirectory;
         
         var requestUrl =
-            $"https://dl.google.com/android/repository/android-ndk-r27d-{GetPlatformString(PlatformService.CurrentPlatform)}.zip";
+            $"https://dl.google.com/android/repository/android-ndk-r29-{GetPlatformString(PlatformService.CurrentPlatform)}.zip";
 
         var stream = await Client.GetStreamAsync(requestUrl);
         

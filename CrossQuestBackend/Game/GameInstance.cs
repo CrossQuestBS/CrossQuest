@@ -29,9 +29,9 @@ public class GameInstance
         Directory.CreateDirectory(Path.Join(InstancePath, "Oculus"));
     }
 
-    public async Task RunIL2CPP(UnityInstance unityInstance, string ndkPath)
+    public async Task<bool> RunIL2CPP(UnityInstance unityInstance, string ndkPath)
     {
-        await il2cppCompile.Compile(unityInstance, this, ndkPath);
+        return await il2cppCompile.Compile(unityInstance, this, ndkPath);
     }
     
     public async Task RunPreIL2CPP(UnityInstance unityInstance)
@@ -91,7 +91,7 @@ public class GameInstance
 
         var scriptingAssemblies = UnityResources.ScriptingAssemblies(unityAssemblies, userAssemblies);
         
-        await File.WriteAllTextAsync(Path.Join(InstancePath, "Resources", "ScriptingAssemblies.json"), scriptingAssemblies.AsJson());
+        await File.WriteAllTextAsync(Path.Join(InstancePath, "Resources", "ScriptingAssemblies.json"), scriptingAssemblies.AsJson().Replace("Names", "names").Replace("Types", "types"));
         
         // TODO: Create RuntimeInitializeOnLoads.json
     }
