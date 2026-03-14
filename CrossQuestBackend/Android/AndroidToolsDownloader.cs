@@ -14,12 +14,14 @@ public static class AndroidToolsDownloader
     private static string GetPlatformString(OSPlatform platform) =>
         platform == OSPlatform.OSX ? "darwin" : platform == OSPlatform.Linux ? "linux" : "windows";
 
-    public static async Task DownloadNDK()
+    public static async Task<string> DownloadNDK()
     {
         var androidFolder = GetAndroidFolder();
+
+        var ndkDirectory = Path.Join(androidFolder, "android-ndk-r27d");
         
-        if (Directory.Exists(Path.Join(androidFolder, "android-ndk-r27d")))
-            return;
+        if (Directory.Exists(ndkDirectory))
+            return ndkDirectory;
         
         var requestUrl =
             $"https://dl.google.com/android/repository/android-ndk-r27d-{GetPlatformString(PlatformService.CurrentPlatform)}.zip";
@@ -27,6 +29,8 @@ public static class AndroidToolsDownloader
         var stream = await Client.GetStreamAsync(requestUrl);
         
         await ZipFile.ExtractToDirectoryAsync(stream, androidFolder);
+        
+        return ndkDirectory;
     }
 
     private static string GetAndroidFolder()
@@ -39,27 +43,32 @@ public static class AndroidToolsDownloader
         return androidFolder;
     }
 
-    public static async Task DownloadApktool()
+    public static async Task<string> DownloadApktool()
     {
         var androidFolder = GetAndroidFolder();
-
 
         var filePath = Path.Join(androidFolder, "apktool.jar");
 
         if (Path.Exists(filePath))
-            return;
+            return filePath;
 
         var bytes = await Client.GetByteArrayAsync(
             "https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_3.0.1.jar");
         await File.WriteAllBytesAsync(filePath, bytes);
+        return filePath;
     }
 
-    public static async Task DownloadBuildTools()
+    public static async Task<string> DownloadApkSigner()
     {
         var androidFolder = GetAndroidFolder();
+        var buildToolsPath = Path.Join(androidFolder, "build-tools");
+        
+        var fileSuffix = PlatformService.CurrentPlatform == OSPlatform.Windows ? ".exe" : "";
 
-        if (Directory.Exists(Path.Join(androidFolder, "build-tools")))
-            return;
+        var apksignerPath = Path.Join(buildToolsPath, $"apksigner{fileSuffix}");
+
+        if (File.Exists(apksignerPath))
+            return apksignerPath;
 
         // Just a check to prevent overriding or error from ZipFile.ExtractToDirectoryAsync
         if (Directory.Exists(Path.Join(androidFolder, "android-14")))
@@ -70,23 +79,26 @@ public static class AndroidToolsDownloader
         if (platformString == "darwin")
             platformString = "macosx";
         
-        
         var requestUrl =
             $"https://dl.google.com/android/repository/build-tools_r34-{platformString}.zip";
         var manifestStream = await Client.GetStreamAsync(requestUrl);
-
-
+        
         await ZipFile.ExtractToDirectoryAsync(manifestStream, androidFolder);
 
-        Directory.Move(Path.Join(androidFolder, "android-14"), Path.Join(androidFolder, "build-tools"));
+        Directory.Move(Path.Join(androidFolder, "android-14"), buildToolsPath);
+        return apksignerPath;
     }
 
-    public static async Task DownloadPlatformTools()
+    public static async Task<string> DownloadADB()
     {
         var androidFolder = GetAndroidFolder();
+
+        var fileSuffix = PlatformService.CurrentPlatform == OSPlatform.Windows ? ".exe" : "";
+
+        var adbPath = Path.Join(androidFolder, "platform-tools", $"adb{fileSuffix}");
         
-        if (Directory.Exists(Path.Join(androidFolder, "platform-tools")))
-            return;
+        if (File.Exists(adbPath))
+            return adbPath;
 
         var platformString = GetPlatformString(PlatformService.CurrentPlatform);
 
@@ -95,5 +107,6 @@ public static class AndroidToolsDownloader
 
 
         await ZipFile.ExtractToDirectoryAsync(manifestStream, androidFolder);
+        return adbPath;
     }
 }
