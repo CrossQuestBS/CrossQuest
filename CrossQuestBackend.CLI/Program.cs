@@ -1,4 +1,5 @@
 ﻿using CrossQuestBackend;
+using CrossQuestBackend.Android;
 using CrossQuestBackend.Game;
 using CrossQuestBackend.Unity;
 
@@ -7,14 +8,19 @@ var beatSaber = games.First(it => it.Id == "com.beatgames.beatsaber");
 var version = beatSaber.ModdableVersionList[0];
 
 var unityInstance = new UnityInstance(version.UnityVersion);
-var instance = new GameInstance(beatSaber.Id, version, version.UnityVersion.Version);
-
+var instance = new GameInstance(beatSaber.Id, version);
 await instance.SetupInstance("", unityInstance);
+
+// TODO: Let users decide to download or use their own!
+await AndroidToolsDownloader.DownloadBuildTools();
+await AndroidToolsDownloader.DownloadPlatformTools();
+await AndroidToolsDownloader.DownloadApktool();
+await AndroidToolsDownloader.DownloadNDK();
 
 // Mods here (?)
 
-await instance.RunPreIL2CPP(unityInstance);
-await instance.RunIL2CPP(unityInstance, "/Users/maribell/QPM-RS/ndk/29.0.14206865+preview-0");
+//await instance.RunPreIL2CPP(unityInstance);
+//await instance.RunIL2CPP(unityInstance, "/Users/maribell/QPM-RS/ndk/29.0.14206865+preview-0");
 
 
 

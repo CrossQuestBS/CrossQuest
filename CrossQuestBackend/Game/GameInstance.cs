@@ -17,7 +17,7 @@ public class GameInstance
     
     public GameVersionInfo GameVersionInfo { get; set; }
     
-    public GameInstance(string gameId, GameVersionInfo version, string unityVersion)
+    public GameInstance(string gameId, GameVersionInfo version)
     {
         GameVersionInfo = version;
         InstancePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CrossQuest", "Games", gameId, $"{GameVersionInfo.Version}");
