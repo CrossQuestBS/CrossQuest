@@ -26,10 +26,4 @@ public class UnityInstance
         if (!Directory.Exists(Path.Join(InstancePath, "UnityData")))
             await UnityDownloader.UnityData(Version.ReleaseTag, PlatformService.CurrentPlatform, InstancePath);
     }
-    
-    public async Task RunUnityLinker()
-    {
-        
-    }
-
 }
