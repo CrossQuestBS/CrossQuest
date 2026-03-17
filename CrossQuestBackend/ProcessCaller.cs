@@ -8,8 +8,10 @@ namespace CrossQuestBackend;
 
 public static class ProcessCaller
 {
-    public static async Task<bool> ProcessAsync(string fileName, string arguments, bool useShellExecute = false)
+    public static async Task<bool> ProcessAsync(string fileName, string arguments, bool useShellExecute = false, string workingDir = "")
     {
+       
+        
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             if (Path.Exists(fileName + ".exe"))
@@ -20,6 +22,10 @@ public static class ProcessCaller
         
         var startInfo = new ProcessStartInfo()
             { FileName = fileName, Arguments = arguments, CreateNoWindow = true, UseShellExecute = useShellExecute };
+
+        if (workingDir != "")
+            startInfo.WorkingDirectory = workingDir;
+        
         using var proc = new Process();
         proc.StartInfo = startInfo;
         proc.Start();

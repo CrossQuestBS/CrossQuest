@@ -11,7 +11,7 @@ var version = beatSaber.ModdableVersionList[0];
 
 var unityInstance = new UnityInstance(version.UnityVersion);
 var instance = new GameInstance(beatSaber.Id, version);
-await instance.SetupInstance("", unityInstance);
+await instance.SetupInstance("***REMOVED***", unityInstance);
 
 // TODO: Let users decide to download or use their own!
 var apkSignerPath = await AndroidToolsDownloader.DownloadApkSigner();
@@ -23,11 +23,15 @@ var androidTools = new AndroidTools(ndkPath, apkSignerPath, adb, apktoolJar);
 
 // Mods here (?)
 
-await instance.RunPreIL2CPP(unityInstance);
+if (!await instance.RunPreIL2CPP(unityInstance))
+{
+    Console.WriteLine("something went wrong during pre il2cpp step");
+    return;
+}
 
 if (!await instance.RunIL2CPP(unityInstance, ndkPath))
 {
-    Console.WriteLine("SOMETHING WENT WRONG!");
+    Console.WriteLine("SOMETHING WENT WRONG during compilation!");
     return;
 }
 
@@ -51,7 +55,7 @@ if (!await ApkService.ExtractApk(androidTools, gameApk, extractApkPath))
     return;
 }
 
-var jniLibs = Path.Join(instance.InstancePath, "UnityDependencies/JniLibs/arm64-v8a");
+var jniLibs = Path.Join(instance.InstancePath, "UnityDependencies", "JniLibs", "arm64-v8a");
 
 List<string> jniLibsToCopy = ["lib_burst_generated.so", "libunity.so"];
 
@@ -71,33 +75,34 @@ File.Copy(il2cppPathSo, Path.Join(libPath, "libil2cpp.so"), true);
 #endregion
 
 #region Copy Metadata
-var globalMetadata = Path.Join(instance.InstancePath, "Build/Native/arm64-v8a/Data/Metadata/global-metadata.dat");
 
-var resourcesFolder = Path.Join(instance.InstancePath, "Build/Native/arm64-v8a/Data/Resources");
+var globalMetadata = Path.Join(instance.InstancePath, "Build", "Native", "arm64-v8a", "Data", "Metadata", "global-metadata.dat");
 
-File.Copy(globalMetadata, Path.Join(extractApkPath, "assets/bin/Data/Managed/Metadata/global-metadata.dat"), true);
+var resourcesFolder = Path.Join(instance.InstancePath, "Build", "Native", "arm64-v8a", "Data", "Resources");
+
+File.Copy(globalMetadata, Path.Join(extractApkPath, "assets", "bin", "Data", "Managed", "Metadata", "global-metadata.dat"), true);
 
 foreach (var resourceFile in Directory.GetFiles(resourcesFolder))
 {
     var fileName = Path.GetFileName(resourceFile);
-    var resourceDir = Path.Join(extractApkPath, "assets/bin/Data/Managed/Resources");
+    var resourceDir = Path.Join(extractApkPath, "assets", "bin", "Data", "Managed", "Resources");
     
     File.Copy(resourceFile, Path.Join(resourceDir, fileName), true);
 }
 #endregion
 
 // Required to add a new unity_app_guid to reset il2cpp cache
-await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets/bin/Data/unity_app_guid"), Guid.NewGuid().ToString());
+await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets", "bin", "Data", "unity_app_guid"), Guid.NewGuid().ToString());
 // Required for correct permissions
 await File.WriteAllTextAsync(Path.Join(extractApkPath, "AndroidManifest.xml"), manifest);
 // Required for getting correct boot.config
-await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets/bin/Data/boot.config"), bootConfig);
+await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets", "bin", "Data", "boot.config"), bootConfig);
 File.Copy(Path.Join(instance.InstancePath, "Resources", "ScriptingAssemblies.json"), Path.Join(extractApkPath, "assets/bin/Data/ScriptingAssemblies.json"), true);
 
 
 
-await ApkService.CreateAPK(androidTools, Path.Join(instance.InstancePath, "Build/Modded.apk"), extractApkPath);
-await ApkService.SignAPK(androidTools, Path.Join(instance.InstancePath, "Build/Modded.apk"));
+await ApkService.CreateAPK(androidTools, Path.Join(instance.InstancePath, "Build", "Modded.apk"), extractApkPath);
+await ApkService.SignAPK(androidTools, Path.Join(instance.InstancePath, "Build", "Modded.apk"));
 
 if (!await AdbService.IsDeviceConnected(androidTools))
 {
@@ -105,7 +110,7 @@ if (!await AdbService.IsDeviceConnected(androidTools))
     return;
 }
 
-await AdbService.InstallAPK(androidTools, Path.Join(instance.InstancePath, "Build/Modded.apk"));
+await AdbService.InstallAPK(androidTools, Path.Join(instance.InstancePath, "Build", "Modded.apk"));
 await AdbService.StartGame(androidTools);
 
 // TODO: Uninstall game if needed

@@ -103,6 +103,7 @@ public static class UnityLinkerHelper
     </linker>
     ";
 
+        Directory.CreateDirectory(Path.Join(instance.InstancePath, "Build"));
         File.WriteAllText(Path.Join(instance.InstancePath, "Build", "GameLink.xml"), xmlFile);
     }
 

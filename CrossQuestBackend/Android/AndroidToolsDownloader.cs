@@ -92,7 +92,7 @@ public static class AndroidToolsDownloader
         var androidFolder = GetAndroidFolder();
         var buildToolsPath = Path.Join(androidFolder, "build-tools");
         
-        var fileSuffix = PlatformService.CurrentPlatform == OSPlatform.Windows ? ".exe" : "";
+        var fileSuffix = PlatformService.CurrentPlatform == OSPlatform.Windows ? ".bat" : "";
 
         var apksignerPath = Path.Join(buildToolsPath, $"apksigner{fileSuffix}");
 

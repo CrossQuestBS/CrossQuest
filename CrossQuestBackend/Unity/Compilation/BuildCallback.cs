@@ -39,6 +39,9 @@ public static class BuildCallback
 
         foreach (var assemblyPath in allFiles1.Where(it => it.EndsWith(".dll")))
         {
+            if (assemblyPath.EndsWith("CrossAccord.Generated.dll"))
+                continue;
+            
             try
             {
                 AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);
@@ -56,9 +59,12 @@ public static class BuildCallback
 
         foreach (var assemblyFile in allAssemblies)
         {
+            if (assemblyFile.EndsWith("CrossAccord.Generated.dll"))
+                continue;
+            
             var parent = Directory.GetParent(assemblyFile)!.FullName;
             AssemblyHelper.InitializeResolver(parent, assemblyPaths1.ToArray());
-            using var assembly = AssemblyHelper.ReadAssemblyInMemory(assemblyFile);
+            var assembly = AssemblyHelper.ReadAssemblyInMemory(assemblyFile, false);
 
             var callbacks = assembly.MainModule.Types
                 .Where(it => it.HasInterfaces && it.Interfaces.Any(it =>
@@ -71,6 +77,7 @@ public static class BuildCallback
             var assemblies2 = AssemblyLoadContext.Default.Assemblies;
             var reflectionAssembly = assemblies2.First(it => it.FullName == assembly.FullName);
 
+            assembly.Dispose();
 
             foreach (var callbackType in callbacks)
             {

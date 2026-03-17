@@ -22,14 +22,14 @@ public static class UnityLinker
 
     }
     
-    public static async Task StartCompile(UnityInstance unityInstance, GameInstance gameInstance)
+    public static async Task<bool> StartCompile(UnityInstance unityInstance, GameInstance gameInstance)
     {
         RemoveBuildFiles(unityInstance);
         
-        var executable = Path.Join(unityInstance.InstancePath, "UnityData/il2cpp/build/deploy/UnityLinker");
-        var outputPath = Path.Join(gameInstance.InstancePath, "Build/ManagedStripped");
+        var executable = Path.Join(unityInstance.InstancePath, "UnityData", "il2cpp", "build", "deploy", "UnityLinker");
+        var outputPath = Path.Join(gameInstance.InstancePath, "Build", "ManagedStripped");
     
-        var playerScriptAssembliesFileNames = Directory.GetFiles(Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/PlayerScriptAssemblies")).Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
+        var playerScriptAssembliesFileNames = Directory.GetFiles(Path.Join(gameInstance.InstancePath, "UnityDependencies", "dependencies", "PlayerScriptAssemblies")).Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
 
         var stagingArea = Path.Join(unityInstance.InstancePath, "Temp", "StagingArea");
         
@@ -38,7 +38,7 @@ public static class UnityLinker
             Path.Join(gameInstance.InstancePath, "Build", "GameLink.xml"),
             Path.Join(gameInstance.InstancePath, "Resources", "link.xml"),
             Path.Join(gameInstance.InstancePath, "Resources", "link_old.xml"),
-            Path.Join(unityInstance.InstancePath, "AndroidPlayer/AndroidNativeLink.xml"),
+            Path.Join(unityInstance.InstancePath, "AndroidPlayer", "AndroidNativeLink.xml"),
         ];
 
         var arguments = new List<string>()
@@ -52,23 +52,23 @@ public static class UnityLinker
             "--use-editor-options",
             $"--include-directory=\"{stagingArea}\""
         };
-
-        foreach (var assembly in Directory.GetFiles(stagingArea))
-        {
-            arguments.Add($"--allowed-assembly=\"{assembly}\"");
-        }
-     
-        foreach (var includeLink in includeLinks)
-        {
-            arguments.Add("--include-link-xml=\"" + includeLink+"\"");
-        }
-
-        foreach (var unityRootAssembly in Directory.GetFiles(stagingArea).Where(it => playerScriptAssembliesFileNames.Contains(Path.GetFileName(it))))
-        {
-            arguments.Add("--include-unity-root-assembly=\""+unityRootAssembly+"\"");
-        }
         
-        Console.WriteLine(String.Join("\n", arguments));
-        await ProcessCaller.ProcessAsync(executable, String.Join(" ", arguments));
+     
+        arguments.Add($"--allowed-assembly={toSpecialList(Directory.GetFiles(stagingArea).Select(it => Path.GetFileName(it)).Where(it => it.EndsWith(".dll")).ToList())}");
+       
+        var includeLinkXmlArguments = toSpecialList(includeLinks);
+        arguments.Add("--include-link-xml=" + includeLinkXmlArguments);
+
+        arguments.Add("--include-unity-root-assembly=" + toSpecialList(playerScriptAssembliesFileNames.ToList()));
+
+        Console.WriteLine(String.Join(" ", arguments));
+        
+        
+        return await ProcessCaller.ProcessAsync(executable, String.Join(" ", arguments), false, stagingArea);
+    }
+
+    private static string toSpecialList(List<string> includeLinks)
+    {
+        return String.Join(",",includeLinks.Select(it => $"\"{it}\""));
     }
 }

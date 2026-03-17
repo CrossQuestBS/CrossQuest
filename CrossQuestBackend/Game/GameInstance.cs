@@ -34,27 +34,28 @@ public class GameInstance
         return await il2cppCompile.Compile(unityInstance, this, ndkPath);
     }
     
-    public async Task RunPreIL2CPP(UnityInstance unityInstance)
+    public async Task<bool> RunPreIL2CPP(UnityInstance unityInstance)
     {
         List<string> assemblyPaths =
         [
             Path.Join(InstancePath, "Libs"),
             Path.Join(InstancePath, "Mods"),
-            Path.Join(InstancePath, "Oculus/Beat Saber_Data/Managed"),
-            Path.Join(InstancePath, "UnityDependencies/dependencies/PlayerScriptAssemblies"),
-            Path.Join(InstancePath, "UnityDependencies/dependencies/Managed"),
-            Path.Join(unityInstance.InstancePath, "UnityData/unityaot-linux"),
-            Path.Join(unityInstance.InstancePath, "UnityData/unityaot-linux/Facades")
+            Path.Join(InstancePath, "Oculus", "Beat Saber_Data", "Managed"),
+            Path.Join(InstancePath, "UnityDependencies", "dependencies", "PlayerScriptAssemblies"),
+            Path.Join(InstancePath, "UnityDependencies", "dependencies", "Managed"),
+            Path.Join(unityInstance.InstancePath, "UnityData", "unityaot-linux"),
+            Path.Join(unityInstance.InstancePath, "UnityData", "unityaot-linux", "Facades")
         ];
 
         List<string> modAndLibAssemblies =
         [
             Path.Join(InstancePath, "Libs"),
-            Path.Join(InstancePath, "Libs/Build"),
+            Path.Join(InstancePath, "Libs", "Build"),
             Path.Join(InstancePath, "Mods"),
-            Path.Join(InstancePath, "Oculus/Beat Saber_Data/Managed"),
-            Path.Join(InstancePath, "UnityDependencies/dependencies/Managed"),
+            Path.Join(InstancePath, "Oculus", "Beat Saber_Data", "Managed"),
+            Path.Join(InstancePath, "UnityDependencies", "dependencies", "Managed"),
         ];
+
 
         var allFiles = new List<string>();
 
@@ -70,21 +71,23 @@ public class GameInstance
 
         UnityLinkerHelper.GenerateLinkFile(this);
 
-        await UnityLinker.StartCompile(unityInstance, this);
+        if (!await UnityLinker.StartCompile(unityInstance, this))
+            return false;
+        
         
         List<string> unityAssemblies = new List<string>();
 
         List<string> userAssemblies = new List<string>();
         var libFiles = Directory.GetFiles(Path.Join(InstancePath, "Libs")).Where(it => it.EndsWith(".dll"));
         var modFiles = Directory.GetFiles(Path.Join(InstancePath, "Mods")).Where(it => it.EndsWith(".dll"));
-        var beatsaberFiles = Directory.GetFiles(Path.Join(InstancePath, "Oculus/Beat Saber_Data/Managed")).Where(it => it.EndsWith(".dll"));
+        var beatsaberFiles = Directory.GetFiles(Path.Join(InstancePath, "Oculus", "Beat Saber_Data", "Managed")).Where(it => it.EndsWith(".dll"));
 
         userAssemblies.AddRange(libFiles);
         userAssemblies.AddRange(modFiles);
         userAssemblies.AddRange(beatsaberFiles);
 
         var stagingAreaFileNames = stagingFiles.Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
-        var unityAssembliesFileNames = Directory.GetFiles(Path.Join(InstancePath, "UnityDependencies/dependencies/Managed"))
+        var unityAssembliesFileNames = Directory.GetFiles(Path.Join(InstancePath, "UnityDependencies", "dependencies", "Managed"))
             .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it)).Where(it => stagingAreaFileNames.Contains(it));
 
         unityAssemblies.AddRange(unityAssembliesFileNames);
@@ -94,6 +97,8 @@ public class GameInstance
         await File.WriteAllTextAsync(Path.Join(InstancePath, "Resources", "ScriptingAssemblies.json"), scriptingAssemblies.AsJson().Replace("Names", "names").Replace("Types", "types"));
         
         // TODO: Create RuntimeInitializeOnLoads.json
+        // Not important right now
+        return true;
     }
 
     public async Task SetupInstance(string OculusToken, UnityInstance unityInstance)
