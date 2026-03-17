@@ -17,9 +17,7 @@ await instance.SetupInstance("", unityInstance);
 var apkSignerPath = await AndroidToolsDownloader.DownloadApkSigner();
 var adb = await AndroidToolsDownloader.DownloadADB();
 var apktoolJar = await AndroidToolsDownloader.DownloadApktool();
-// TODO: Fix this for mac :(
-//var ndkPath = await AndroidToolsDownloader.DownloadNDK();
-var ndkPath = "/Users/maribell/QPM-RS/ndk/29.0.14206865+preview-0";
+var ndkPath = await AndroidToolsDownloader.DownloadNDK();
 
 var androidTools = new AndroidTools(ndkPath, apkSignerPath, adb, apktoolJar);
 
@@ -34,6 +32,7 @@ if (!await instance.RunIL2CPP(unityInstance, ndkPath))
 }
 
 var bootConfig = UnityResources.BootConfig();
+var manifest = UnityResources.Manifest();
 
 var tempPath = Path.GetTempPath() + Guid.NewGuid();
 
@@ -87,14 +86,27 @@ foreach (var resourceFile in Directory.GetFiles(resourcesFolder))
 }
 #endregion
 
+// Required to add a new unity_app_guid to reset il2cpp cache
+await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets/bin/Data/unity_app_guid"), Guid.NewGuid().ToString());
+// Required for correct permissions
+await File.WriteAllTextAsync(Path.Join(extractApkPath, "AndroidManifest.xml"), manifest);
+// Required for getting correct boot.config
 await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets/bin/Data/boot.config"), bootConfig);
 File.Copy(Path.Join(instance.InstancePath, "Resources", "ScriptingAssemblies.json"), Path.Join(extractApkPath, "assets/bin/Data/ScriptingAssemblies.json"), true);
+
+
 
 await ApkService.CreateAPK(androidTools, Path.Join(instance.InstancePath, "Build/Modded.apk"), extractApkPath);
 await ApkService.SignAPK(androidTools, Path.Join(instance.InstancePath, "Build/Modded.apk"));
 
+if (!await AdbService.IsDeviceConnected(androidTools))
+{
+    Console.WriteLine("Quest headset not connected, not installing game");
+    return;
+}
+
+await AdbService.InstallAPK(androidTools, Path.Join(instance.InstancePath, "Build/Modded.apk"));
+await AdbService.StartGame(androidTools);
 
 // TODO: Uninstall game if needed
-// TODO: Clear game cache
-// TODO: Install game
 // TODO: Fix permissions

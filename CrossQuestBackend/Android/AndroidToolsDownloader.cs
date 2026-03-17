@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -14,31 +15,51 @@ public static class AndroidToolsDownloader
     private static string GetPlatformString(OSPlatform platform) =>
         platform == OSPlatform.OSX ? "darwin" : platform == OSPlatform.Linux ? "linux" : "windows";
 
+    private static async Task<string> DownloadNDKForOSX(string ndkDirectory)
+    {
+        var responseByteArray = await Client.GetByteArrayAsync("https://dl.google.com/android/repository/android-ndk-r29-darwin.dmg");
+
+        var tempFolder = Path.GetTempPath();
+
+        var dir = Path.Join(tempFolder, Guid.NewGuid().ToString());
+
+        Directory.CreateDirectory(dir);
+
+        var dmgFilePath = Path.Join(dir, "android-ndk-r29-darwin.dmg");
+        await File.WriteAllBytesAsync(dmgFilePath, responseByteArray);
+            
+        await ProcessCaller.ProcessAsync("hdiutil", $"attach \"{dmgFilePath}\" -nobrowse -noautoopen", true);
+
+        var ndkVolumePath = Directory.GetDirectories("/Volumes").First(it => it.Contains("Android"));
+
+        var ndkAppDir = Directory.GetDirectories(ndkVolumePath)
+            .First(it => it.Contains("AndroidNDK") && it.EndsWith(".app"));
+
+        await ProcessCaller.ProcessAsync("cp", $"-r \"{ndkAppDir}/Contents/NDK\" \"{ndkDirectory}\" ", true);
+        await ProcessCaller.ProcessAsync("hdiutil", $"detach \"{ndkVolumePath}\"", true);
+
+        Directory.Delete(dir, true);
+        return ndkDirectory;
+    }
+    
     public static async Task<string> DownloadNDK()
     {
         var androidFolder = GetAndroidFolder();
 
         var ndkDirectory = Path.Join(androidFolder, "android-ndk-r29");
         
-        // TODO: This doees not work, instead get the files from DMG
-        // This was supposed to be hack but did not work
-        File.Delete(Path.Join(ndkDirectory, "toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"));
-        File.CreateSymbolicLink(
-            Path.Join(ndkDirectory, "toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++"),
-            Path.Join(ndkDirectory, "toolchains/llvm/prebuilt/darwin-x86_64/bin/clang-21"));
-        
-            
         if (Directory.Exists(ndkDirectory))
             return ndkDirectory;
-        
+
+        if (PlatformService.CurrentPlatform == OSPlatform.OSX)
+            return await DownloadNDKForOSX(ndkDirectory);
+      
         var requestUrl =
             $"https://dl.google.com/android/repository/android-ndk-r29-{GetPlatformString(PlatformService.CurrentPlatform)}.zip";
-
         var stream = await Client.GetStreamAsync(requestUrl);
-        
         await ZipFile.ExtractToDirectoryAsync(stream, androidFolder);
-        
-        return ndkDirectory;
+      
+        return ndkDirectory; 
     }
 
     private static string GetAndroidFolder()
