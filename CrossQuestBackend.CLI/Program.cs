@@ -11,7 +11,7 @@ var version = beatSaber.ModdableVersionList[0];
 
 var unityInstance = new UnityInstance(version.UnityVersion);
 var instance = new GameInstance(beatSaber.Id, version);
-await instance.SetupInstance("***REMOVED***", unityInstance);
+await instance.SetupInstance("", unityInstance);
 
 // TODO: Let users decide to download or use their own!
 var apkSignerPath = await AndroidToolsDownloader.DownloadApkSigner();
@@ -42,13 +42,12 @@ var tempPath = Path.GetTempPath() + Guid.NewGuid();
 
 Directory.CreateDirectory(tempPath);
 
-// TODO: use apktool to unextract downloaded apk
-
 var gameApk = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus"))
     .First(it => it.Contains("beat-saber") && it.EndsWith("apk"));
 
 var extractApkPath = Path.Join(tempPath, "beat-saber");
 Console.WriteLine($"Extracting APK to {extractApkPath}");
+
 if (!await ApkService.ExtractApk(androidTools, gameApk, extractApkPath))
 {
     Console.WriteLine("Failed to extract APK!");
@@ -98,8 +97,6 @@ await File.WriteAllTextAsync(Path.Join(extractApkPath, "AndroidManifest.xml"), m
 // Required for getting correct boot.config
 await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets", "bin", "Data", "boot.config"), bootConfig);
 File.Copy(Path.Join(instance.InstancePath, "Resources", "ScriptingAssemblies.json"), Path.Join(extractApkPath, "assets/bin/Data/ScriptingAssemblies.json"), true);
-
-
 
 await ApkService.CreateAPK(androidTools, Path.Join(instance.InstancePath, "Build", "Modded.apk"), extractApkPath);
 await ApkService.SignAPK(androidTools, Path.Join(instance.InstancePath, "Build", "Modded.apk"));
