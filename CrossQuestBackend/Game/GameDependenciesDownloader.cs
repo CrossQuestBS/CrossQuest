@@ -1,9 +1,7 @@
-using System.Collections.Generic;
+using System;
 using System.Formats.Tar;
-using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace CrossQuestBackend.Game;
@@ -24,9 +22,17 @@ public static class GameDependenciesDownloader
         await TarFile.ExtractToDirectoryAsync(gZipStream, directory, true);
     }
 
-    public static async Task Jni(string tag, string directory) => 
+    public static async Task Jni(string tag, string directory)
+    {
+        Console.WriteLine($"[Download] Starting to download jni libraries for tag: {tag}");
         await DownloadGithubRelease(tag, directory, $"jni-beatsaber.tar.gz");
-    
-    public static async Task Dependencies(string tag, string directory) =>
+        Console.WriteLine($"[Download] Done downloading jni libraries for tag: {tag}");
+    }
+
+    public static async Task Dependencies(string tag, string directory)
+    {
+        Console.WriteLine($"[Download] Downloading dependencies for tag: {tag}");
         await DownloadGithubRelease(tag, directory, "dependencies-beatsaber.tar.gz");
+        Console.WriteLine($"[Download] Done downloading dependencies for tag: {tag}");
+    }
 }

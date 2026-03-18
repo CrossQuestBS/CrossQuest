@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 
 namespace CrossQuestBackend.Game.Models;
 
+[method: JsonConstructor]
 public record GameVersionInfo(
     [JsonProperty("version")] string Version,
     [JsonProperty("unityVersion")] UnityVersionInfo UnityVersion,

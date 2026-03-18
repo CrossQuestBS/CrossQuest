@@ -1,9 +1,12 @@
 using System;
 using System.Buffers.Text;
+using System.Collections.Generic;
 using System.IO;
 using System.Resources;
+using System.Threading;
 using System.Threading.Tasks;
 using CrossQuestBackend.Android.Models;
+using CrossQuestBackend.Game;
 
 namespace CrossQuestBackend.Android;
 
@@ -13,6 +16,62 @@ public static class ApkService
 
     public static string Base64CertFileContent =
         "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNwakNDQVk2Z0F3SUJBZ0lJY21PVmt1SS9EYlV3RFFZSktvWklodmNOQVFFTEJRQXdFakVRTUE0R0ExVUUKQXd3SFZXNXJibTkzYmpBZ0Z3MHhNVEE1TWprd01EQXdNREJhR0E4eU1EY3hNRGt5T1RBd01EQXdNRm93RWpFUQpNQTRHQTFVRUF3d0hWVzVyYm05M2JqQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCCkFJYjNVL04zeExUc21kZStuWDJaN0FCYytFTXNLOTJ3NU4wcm4veW5BRSszUXl2YjRuWTZxRkJzUDFMcVAxdU4KWnlNb1pPbSs4TXFTVzB6RnNFQUJFemtXbXUxQWhlY2w2SklEcWpTYmFtaitJa1paTEZJQ1VnMDBVSXc1WEoxLwp1cTJqWDJoa25jL3FQckdOc3ZsdGdaNU5Ed0ljL2VOSjdTYjFiOFBZRDFySFdNRXZ4a2REbVc0MUVVUDM1ajVOCkFUSlgyTmpRQzNRWkFzbGJrVDg5MFRybHdOV2JleGExWXlwU1NlMzFoamFUWVZjOHVic29hY0dxL2RTeEFrT2YKRUtZZjErVSt6MFZkeHU3NndTbmZPN0gvU1hQWWM0VG9OenpvcWswa285TEJ6alRxbGUxc0hFSkJDS1JCYk1LdApReWx6NHJqeU1vYnZnSUZrUHFGeTZkOENBd0VBQVRBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQU1OVFFvOWxnCmJ2SG5wMU90NGcxVWdqcFNEdTUyQktkQUIwZWFlUi8zUnRtK0UwRStqVU1YU0k3MGltNFB4Yk4rZU9tVEczTkMKbzBuTy9GTFFVdzNqM28za21PTjRWbFBhcEdzRHBLZTJySGJMKzVIeVNQYlNqa0dwd1RUR1BWenpmaHY5ZFVENgpsOTdRSUI1Y212UkgzVDlDUC84Yytlck9BUkJGMmtHaXRkTlR0eVV4dlFzbC94YWlLQW51YUU3VWIwWW1wc1pRCmUxRWlKOUxOd0Y5Mll2SzNkV1A5Y0JLT0tueFFFQWNTZ3VnR1dXSWJpQ1dGOUtITFVXWXZUMkd2MXRnbCtrdkUKL1pVaWUrK09xbkZFalBlV0RUc2JwaUpYRDFzS0ZVcDNpQ2Y5NzBtZ0xNZlhZd2tpUnh3aWNZRm55MHR1OTB3RgpOYnp3eTF6S2hVQzgwdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K";
+    
+    public static void CopyJniLibs(GameInstance instance, string extractApkPath)
+    {
+        var jniLibs = Path.Join(instance.InstancePath, "UnityDependencies", "JniLibs", "arm64-v8a");
+
+        List<string> jniLibsToCopy = ["lib_burst_generated.so", "libunity.so"];
+
+        var libPath = Path.Join(extractApkPath, "lib/arm64-v8a");
+        
+        var il2cppPathSo = Path.Join(instance.InstancePath, "Build/Native/arm64-v8a/libil2cpp.so");
+
+        foreach (var jniLib in jniLibsToCopy)
+        {
+            var fileToCopy = Path.Join(jniLibs, jniLib);
+            var toPath = Path.Join(libPath, jniLib);
+            File.Copy(fileToCopy, toPath, true);
+        }
+
+        File.Copy(il2cppPathSo, Path.Join(libPath, "libil2cpp.so"), true);
+    }
+    
+    public static async Task CopyMetadata(CancellationToken cancellationToken, GameInstance instance,
+        string extractApkPath, string manifest, string bootConfig)
+    {
+        var globalMetadata = Path.Join(instance.InstancePath, "Build", "Native", "arm64-v8a", "Data",
+            "Metadata",
+            "global-metadata.dat");
+
+        var resourcesFolder = Path.Join(instance.InstancePath, "Build", "Native", "arm64-v8a", "Data",
+            "Resources");
+
+        File.Copy(globalMetadata,
+            Path.Join(extractApkPath, "assets", "bin", "Data", "Managed", "Metadata", "global-metadata.dat"),
+            true);
+
+        foreach (var resourceFile in Directory.GetFiles(resourcesFolder))
+        {
+            var fileName = Path.GetFileName(resourceFile);
+            var resourceDir = Path.Join(extractApkPath, "assets", "bin", "Data", "Managed", "Resources");
+
+            File.Copy(resourceFile, Path.Join(resourceDir, fileName), true);
+        }
+        
+        // Required to add a new unity_app_guid to reset il2cpp cache
+        await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets", "bin", "Data", "unity_app_guid"),
+            Guid.NewGuid().ToString(), cancellationToken);
+        // Required for correct permissions
+        await File.WriteAllTextAsync(Path.Join(extractApkPath, "AndroidManifest.xml"), manifest,
+            cancellationToken);
+        // Required for getting correct boot.config
+        await File.WriteAllTextAsync(Path.Join(extractApkPath, "assets", "bin", "Data", "boot.config"),
+            bootConfig,
+            cancellationToken);
+        File.Copy(Path.Join(instance.InstancePath, "Resources", "ScriptingAssemblies.json"),
+            Path.Join(extractApkPath, "assets/bin/Data/ScriptingAssemblies.json"), true);
+    }
     
     public static async Task<bool> ExtractApk(AndroidTools tools, string apkPath, string extractPath)
     {

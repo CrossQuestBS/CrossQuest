@@ -1,3 +1,8 @@
+using System.IO;
+using System.Threading.Tasks;
+using CrossQuestBackend.Unity;
+using Newtonsoft.Json;
+
 namespace CrossQuestBackend.Android.Models;
 
 public class AndroidTools
@@ -15,5 +20,11 @@ public class AndroidTools
         ApktoolJar = apktoolJar;
         Apksigner = apksigner;
         Adb = adb;
+    }
+
+    public async Task Save(UnityInstance instance)
+    {
+        var serializeObject = JsonConvert.SerializeObject(this);
+        await File.WriteAllTextAsync(Path.Join(instance.InstancePath, "AndroidTools.json"), serializeObject);
     }
 }

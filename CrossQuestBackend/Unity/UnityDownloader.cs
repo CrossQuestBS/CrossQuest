@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Formats.Tar;
 using System.IO;
@@ -27,9 +28,18 @@ public static class UnityDownloader
         await TarFile.ExtractToDirectoryAsync(gZipStream, directory, true);
     }
 
-    public static async Task UnityData(string tag, OSPlatform platform, string directory) => 
-        await DownloadUnityRelease(tag, directory, $"unitydata-{GetPlatformString(platform)}.tar.gz");
+    public static async Task UnityData(string tag, OSPlatform platform, string directory)
+    {
+        var unitydataFile = $"unitydata-{GetPlatformString(platform)}.tar.gz";
+        Console.WriteLine($"[Download] Downloading {unitydataFile}");
+        await DownloadUnityRelease(tag, directory, unitydataFile);
+        Console.WriteLine($"[Download] Done downloading {unitydataFile}");
+    } 
     
-    public static async Task AndroidPlayer(string tag, string directory) =>
+    public static async Task AndroidPlayer(string tag, string directory){
+        Console.WriteLine("[Download] Downloading androidplayer.tar.gz");
         await DownloadUnityRelease(tag, directory, "androidplayer.tar.gz");
+        Console.WriteLine("[Download] Done downloading androidplayer.tar.gz");
+    }
+        
 }

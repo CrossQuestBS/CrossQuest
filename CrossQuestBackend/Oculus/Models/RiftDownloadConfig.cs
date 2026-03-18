@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 
 namespace CrossQuestBackend.Oculus.Models;
 
+[method: JsonConstructor]
 public record RiftDownloadConfig(
     [JsonProperty("appId")] string AppId,
     [JsonProperty("version")] string Version,

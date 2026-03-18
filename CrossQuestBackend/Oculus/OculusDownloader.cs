@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -43,14 +44,17 @@ public static class OculusDownloader
     public static async Task<bool> RiftGame(RiftDownloadConfig downloadConfig, string accessToken,
         string downloadPath)
     {
+        Console.WriteLine($"[Download] Downloading rift game: {downloadConfig.AppId} - {downloadConfig.Version}");
         var manifest = await Manifest(downloadConfig.BinaryId, accessToken);
 
         if (manifest is null)
             return false;
 
-        foreach (var file in downloadConfig.FilesToDownload)
+        for (int i = 0; i < downloadConfig.FilesToDownload.Count; i++)
         {
+            var file = downloadConfig.FilesToDownload[i];
             var filePath = file.Replace("\\", "/");
+            Console.WriteLine($"[Download({i}/{downloadConfig.FilesToDownload.Count})] Downloading file {file}");
             if (!manifest.Files.TryGetValue(file, out var manifestFile)) continue;
 
             var path = Path.Join(downloadPath, filePath);
@@ -67,12 +71,13 @@ public static class OculusDownloader
             await DownloadSegments(downloadConfig.BinaryId, accessToken, manifestFile, fileBytes);
             await SaveSegmentFile(fileBytes.ToArray(), path);
         }
-
+        Console.WriteLine($"[Download] Done downloading rift game: {downloadConfig.AppId} - {downloadConfig.Version}");
         return true;
     }
 
     public static async Task QuestGame(QuestDownloadConfig config, string accessToken, string path)
     {
+        Console.WriteLine($"[Download] Downloading quest game: {config.AppId} - {config.Version}");
         var responseMessage = await Client.GetAsync(
             QuestURL(config.BinaryId, accessToken)
         );
@@ -88,6 +93,7 @@ public static class OculusDownloader
 
         await using FileStream outputFileStream = File.Create(filePath);
         await responseMessage.Content.CopyToAsync(outputFileStream);
+        Console.WriteLine($"[Download] Done downloading quest game: {config.AppId} - {config.Version}");
     }
 
     private static async Task SaveSegmentFile(byte[] bytes, string path)

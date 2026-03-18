@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using CrossQuestBackend.Oculus;
 using CrossQuestBackend.Oculus.Models;
+using Newtonsoft.Json;
 
 namespace CrossQuestBackend.Unity;
 
@@ -10,6 +11,13 @@ public class UnityInstance
 {
     public UnityVersionInfo Version { get; set; }
     public string InstancePath { get; set; }
+
+    [JsonConstructor]
+    public UnityInstance(UnityVersionInfo version, string instancePath)
+    {
+        Version = version;
+        InstancePath = instancePath;
+    }
     
     public UnityInstance(UnityVersionInfo version)
     {

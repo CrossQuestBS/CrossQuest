@@ -8,16 +8,26 @@ using CrossQuestBackend.Oculus;
 using CrossQuestBackend.Unity;
 using CrossQuestBackend.Unity.Compilation;
 using CrossQuestBackend.Unity.Models;
+using Newtonsoft.Json;
 
 namespace CrossQuestBackend.Game;
 
 public class GameInstance
 {
+    [JsonProperty("InstancePath")]
     public string InstancePath { get; set; }
     
+    [JsonProperty("GameVersionInfo")]
     public GameVersionInfo GameVersionInfo { get; set; }
+
+    [JsonConstructor]
+    public GameInstance(string instancePath, GameVersionInfo gameVersionInfo)
+    {
+        InstancePath = instancePath;
+        GameVersionInfo = gameVersionInfo;
+    }
     
-    public GameInstance(string gameId, GameVersionInfo version)
+    public GameInstance(GameVersionInfo version, string gameId)
     {
         GameVersionInfo = version;
         InstancePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CrossQuest", "Games", gameId, $"{GameVersionInfo.Version}");

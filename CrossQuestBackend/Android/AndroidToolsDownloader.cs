@@ -54,11 +54,12 @@ public static class AndroidToolsDownloader
         if (PlatformService.CurrentPlatform == OSPlatform.OSX)
             return await DownloadNDKForOSX(ndkDirectory);
       
+        Console.WriteLine($"[Download] Downloading android ndk r29");
         var requestUrl =
             $"https://dl.google.com/android/repository/android-ndk-r29-{GetPlatformString(PlatformService.CurrentPlatform)}.zip";
         var stream = await Client.GetStreamAsync(requestUrl);
         await ZipFile.ExtractToDirectoryAsync(stream, androidFolder);
-      
+        Console.WriteLine($"[Download] Done downloading android ndk r29");
         return ndkDirectory; 
     }
 
@@ -80,10 +81,11 @@ public static class AndroidToolsDownloader
 
         if (Path.Exists(filePath))
             return filePath;
-
+        Console.WriteLine($"[Download] Downloading apktool.jar");
         var bytes = await Client.GetByteArrayAsync(
             "https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_3.0.1.jar");
         await File.WriteAllBytesAsync(filePath, bytes);
+        Console.WriteLine($"[Download] Done Downloading apktool.jar");
         return filePath;
     }
 
@@ -98,6 +100,7 @@ public static class AndroidToolsDownloader
 
         if (File.Exists(apksignerPath))
             return apksignerPath;
+        
 
         // Just a check to prevent overriding or error from ZipFile.ExtractToDirectoryAsync
         if (Directory.Exists(Path.Join(androidFolder, "android-14")))
@@ -108,6 +111,7 @@ public static class AndroidToolsDownloader
         if (platformString == "darwin")
             platformString = "macosx";
         
+        Console.WriteLine($"[Download] Downloading ApkSigner for platform: {platformString}");
         var requestUrl =
             $"https://dl.google.com/android/repository/build-tools_r34-{platformString}.zip";
         var manifestStream = await Client.GetStreamAsync(requestUrl);
@@ -115,6 +119,7 @@ public static class AndroidToolsDownloader
         await ZipFile.ExtractToDirectoryAsync(manifestStream, androidFolder);
 
         Directory.Move(Path.Join(androidFolder, "android-14"), buildToolsPath);
+        Console.WriteLine($"[Download] Done downloading ApkSigner for platform: {platformString}");
         return apksignerPath;
     }
 
@@ -131,11 +136,13 @@ public static class AndroidToolsDownloader
 
         var platformString = GetPlatformString(PlatformService.CurrentPlatform);
 
+        Console.WriteLine($"[Download] Downloading adb for platform: {platformString}");
         var requestUrl = $"https://dl.google.com/android/repository/platform-tools-latest-{platformString}.zip";
         var manifestStream = await Client.GetStreamAsync(requestUrl);
 
 
         await ZipFile.ExtractToDirectoryAsync(manifestStream, androidFolder);
+        Console.WriteLine($"[Download] Done downloading adb for platform: {platformString}");
         return adbPath;
     }
 }
