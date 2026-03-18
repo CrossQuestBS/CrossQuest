@@ -47,6 +47,7 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
             return 1;
         }
 
+        var moddedApkPath = Path.Join(instance.InstancePath, "Build", "Modded.apk");
         try
         {
             if (settings.BuildAPK)
@@ -74,9 +75,9 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
 
                 await ApkService.CopyMetadata(cancellationToken, instance, extractApkPath, manifest, bootConfig);
 
-                await ApkService.CreateAPK(androidTools, Path.Join(instance.InstancePath, "Build", "Modded.apk"),
+                await ApkService.CreateAPK(androidTools, moddedApkPath,
                     extractApkPath);
-                await ApkService.SignAPK(androidTools, Path.Join(instance.InstancePath, "Build", "Modded.apk"));
+                await ApkService.SignAPK(androidTools, moddedApkPath);
             }
             
         }
@@ -89,7 +90,7 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
         if (!settings.DeployToDevice)
             return 0;
 
-        if (!File.Exists(Path.Join(instance.InstancePath, "Build", "Modded.apk")))
+        if (!File.Exists(moddedApkPath))
         {
             Console.WriteLine("Could not find built apk!");
             return 1;
@@ -101,7 +102,7 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
             return 1;
         }
 
-        await AdbService.InstallAPK(androidTools, Path.Join(instance.InstancePath, "Build", "Modded.apk"));
+        await AdbService.InstallAPK(androidTools, moddedApkPath);
         await AdbService.StartGame(androidTools);
 
         return 0;
