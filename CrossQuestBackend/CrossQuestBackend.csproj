@@ -18,4 +18,12 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\AndroidManifest.xml" />
+      <EmbeddedResource Include="Resources\boot.config" />
+      <EmbeddedResource Include="Resources\debug_cert.crt" />
+      <EmbeddedResource Include="Resources\debug_key.pk8" />
+      <EmbeddedResource Include="Resources\link.xml" />
+    </ItemGroup>
+
 </Project>

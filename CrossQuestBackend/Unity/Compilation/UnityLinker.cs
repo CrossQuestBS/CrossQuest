@@ -32,12 +32,12 @@ public static class UnityLinker
         var playerScriptAssembliesFileNames = Directory.GetFiles(Path.Join(gameInstance.InstancePath, "UnityDependencies", "dependencies", "PlayerScriptAssemblies")).Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
 
         var stagingArea = Path.Join(unityInstance.InstancePath, "Temp", "StagingArea");
+
         
         List<string> includeLinks =
         [
             Path.Join(gameInstance.InstancePath, "Build", "GameLink.xml"),
             Path.Join(gameInstance.InstancePath, "Resources", "link.xml"),
-            Path.Join(gameInstance.InstancePath, "Resources", "link_old.xml"),
             Path.Join(unityInstance.InstancePath, "AndroidPlayer", "AndroidNativeLink.xml"),
         ];
 

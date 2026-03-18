@@ -8,8 +8,9 @@ namespace CrossQuestBackend.Unity.Compilation;
 
 public static class UnityLinkerHelper
 {
-    private static List<string> GetDllFiles(string directory) => Directory.GetFiles(directory).Where(path => path.EndsWith(".dll")).ToList();
-    
+    private static List<string> GetDllFiles(string directory) =>
+        Directory.GetFiles(directory).Where(path => path.EndsWith(".dll")).ToList();
+
     public static void CopyFilesToStaging(UnityInstance unityInstanceParam, GameInstance gameInstance)
     {
         var tempFolder = Path.Join(unityInstanceParam.InstancePath, "Temp");
@@ -22,7 +23,7 @@ public static class UnityLinkerHelper
         Directory.CreateDirectory(stagingArea);
 
         List<string> assemblyPaths =
-        [        
+        [
             Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/PlayerScriptAssemblies"),
             Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/Managed"),
             Path.Join(gameInstance.InstancePath, "Libs"),
@@ -41,7 +42,7 @@ public static class UnityLinkerHelper
             }
         }
     }
-    
+
     public static void GenerateLinkFile(GameInstance instance)
     {
         List<string> filesToSave = new();
@@ -52,7 +53,7 @@ public static class UnityLinkerHelper
             .Select(it => Path.GetFileName(it));
         var gameFiles = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus/Beat Saber_Data/Managed"))
             .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
-        
+
         var playerAssemblies = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus/Beat Saber_Data/Managed"))
             .Where(it => it.EndsWith(".dll")).Select(it => Path.GetFileName(it));
 
@@ -105,21 +106,23 @@ public static class UnityLinkerHelper
 
         Directory.CreateDirectory(Path.Join(instance.InstancePath, "Build"));
         File.WriteAllText(Path.Join(instance.InstancePath, "Build", "GameLink.xml"), xmlFile);
+
+        File.WriteAllText(Path.Join(instance.InstancePath, "Resources", "link.xml"), UnityResources.LinkFile());
     }
 
-    
-    public static Tuple<List<string>, List<string>> GetLinkerAssemblyPaths(string androidPlayer, string unityData, string gameDependencies)
+
+    // TODO: Remove this code!
+    public static Tuple<List<string>, List<string>> GetLinkerAssemblyPaths(string androidPlayer, string unityData,
+        string gameDependencies)
     {
         var allowedAssemblies = new List<string>();
-    
+
         var managedAssembliesPath = Path.Join(androidPlayer, "Managed");
         var playerScriptAssemblies = Path.Join(gameDependencies, "dependencies/PlayerScriptAssemblies");
-        //var additionalAssembliesPrebuilt = Path.Join(config.ProjectPath, ConstantPaths.AdditionalAssembliesPath);
         var unityAotLinux = Path.Join(unityData, "unityaot-linux");
         var unityAotLinuxFacade = Path.Join(unityData, "unityaot-linux/Facades");
-        
+
         allowedAssemblies.AddRange(GetDllFiles(managedAssembliesPath));
-        //allowedAssemblies.AddRange(GetDllFiles(additionalAssembliesPrebuilt));
         allowedAssemblies.AddRange(GetDllFiles(playerScriptAssemblies));
         allowedAssemblies.AddRange(GetDllFiles(unityAotLinux));
         allowedAssemblies.AddRange(GetDllFiles(unityAotLinuxFacade));
