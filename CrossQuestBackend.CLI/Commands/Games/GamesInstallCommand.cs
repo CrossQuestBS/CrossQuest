@@ -28,6 +28,12 @@ public class GamesInstallCommand : AsyncCommand<GamesInstallCommand.Settings>
     protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
         CancellationToken cancellationToken)
     {
+        if (!settings.Token.StartsWith("OC"))
+        {
+            Console.WriteLine("Invalid Oculus token, it must start with OC");
+            return 1;
+        }
+        
         var games = await ResourceDownloader.Games();
 
         var game = games.FirstOrDefault(it => it.Id == settings.GameId);
@@ -61,11 +67,7 @@ public class GamesInstallCommand : AsyncCommand<GamesInstallCommand.Settings>
         var unityInstance = new UnityInstance(version.UnityVersion);
         var instance = new GameInstance(version, game.Id);
 
-        if (!settings.Token.StartsWith("OC"))
-        {
-            Console.WriteLine("Invalid Oculus token, it must start with OC");
-            return 1;
-        }
+     
 
         Console.WriteLine("Setting up instance");
         await instance.SetupInstance(settings.Token, unityInstance);
