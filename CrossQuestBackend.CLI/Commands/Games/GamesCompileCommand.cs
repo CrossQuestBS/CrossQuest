@@ -9,12 +9,12 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
 {
     public class Settings : CommandSettings
     {
-        [CommandOption("--build-apk")]
+        [CommandOption("-b|--build-apk")]
         [Description("Build apk after compilation")]
         [DefaultValue(false)]
         public required bool BuildAPK { get; init; }
 
-        [CommandOption("--deploy-to-device")]
+        [CommandOption("-d|--deploy-to-device")]
         [Description("Deploy to device if connected using adb")]
         [DefaultValue(false)]
         public required bool DeployToDevice { get; init; }
