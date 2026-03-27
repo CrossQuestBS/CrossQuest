@@ -9,5 +9,6 @@ public record GameVersionInfo(
     [JsonProperty("unityVersion")] UnityVersionInfo UnityVersion,
     [JsonProperty("releaseTag")] string ReleaseTag,
     [JsonProperty("riftConfig")] RiftDownloadConfig RiftConfig,
-    [JsonProperty("questConfig")] QuestDownloadConfig QuestConfig
+    [JsonProperty("questConfig")] QuestDownloadConfig QuestConfig,
+    [JsonProperty("obbBinary")] ObbBinary ObbBinary
 );

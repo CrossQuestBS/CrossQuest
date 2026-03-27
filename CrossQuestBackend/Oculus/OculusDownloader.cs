@@ -23,6 +23,25 @@ public static class OculusDownloader
     private static string QuestURL(string binaryId, string accessToken) =>
         $"https://securecdn.oculus.com/binaries/download/?id={binaryId}&access_token={accessToken}";
 
+    public static async Task DownloadObb(ObbBinary obbBinary, string path, string accessToken)
+    {
+        Console.WriteLine($"[Download] Downloading obb: {obbBinary.BinaryId} - {obbBinary.FileName}");
+        var responseMessage = await Client.GetAsync(
+            QuestURL(obbBinary.BinaryId, accessToken)
+        );
+
+        var contentDisposition = responseMessage.Content.Headers.ContentDisposition;
+        if (contentDisposition is null)
+            throw new FileNotFoundException($"obb with binaryId {obbBinary.BinaryId} not found");
+
+      
+
+        var filePath = Path.Join(path, obbBinary.FileName);
+
+        await using FileStream outputFileStream = File.Create(filePath);
+        await responseMessage.Content.CopyToAsync(outputFileStream);
+        Console.WriteLine($"[Download] Done downloading obb file: {obbBinary.BinaryId} - {obbBinary.FileName}");
+    }
 
     public static async Task<Manifest?> Manifest(string manifestId, string accessToken)
     {

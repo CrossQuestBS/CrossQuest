@@ -142,5 +142,8 @@ public class GameInstance
         var files = Directory.GetFiles(oculusPath);
         if (!files.Any(it => it.EndsWith(".apk")))
             await OculusDownloader.QuestGame(GameVersionInfo.QuestConfig, access_token, oculusPath);
+
+        if (!files.Any(it => it.Contains(GameVersionInfo.ObbBinary.FileName)))
+            await OculusDownloader.DownloadObb(GameVersionInfo.ObbBinary, oculusPath, access_token);
     }
 }
