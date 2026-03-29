@@ -1,6 +1,6 @@
-# CrossQuestUI
+# CrossQuest
 
-UI for an alternative Beat Saber Quest modding ecosystem.
+Alternative Beat Saber Quest modding ecosystem.
 
 ## Requirements to run
 * Oculus Token
