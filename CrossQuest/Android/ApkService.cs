@@ -82,7 +82,7 @@ public static class ApkService
     private static byte[] ResourceToBytes(string fileName)
     {
         var assembly = typeof(ApkService).GetTypeInfo().Assembly;
-        Stream? resource = assembly.GetManifestResourceStream($"CrossQuestBackend.Resources.{fileName}");
+        Stream? resource = assembly.GetManifestResourceStream($"CrossQuest.Resources.{fileName}");
         
         using var memoryStream = new MemoryStream();
         resource?.CopyTo(memoryStream);

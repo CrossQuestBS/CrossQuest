@@ -14,7 +14,7 @@ public static class UnityResources
     private static string ResourceToString(string fileName)
     {
         var assembly = typeof(UnityResources).GetTypeInfo().Assembly;
-        Stream? resource = assembly.GetManifestResourceStream($"CrossQuestBackend.Resources.{fileName}");
+        Stream? resource = assembly.GetManifestResourceStream($"CrossQuest.Resources.{fileName}");
         
         var reader = new StreamReader(resource);
 

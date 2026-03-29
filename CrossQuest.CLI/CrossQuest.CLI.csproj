@@ -5,10 +5,11 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>CrossQuest.CLI</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\CrossQuestBackend\CrossQuestBackend.csproj" />
+      <ProjectReference Include="..\CrossQuest\CrossQuest.csproj" />
     </ItemGroup>
 
     <ItemGroup>
