@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using CrossQuestBackend.Unity.Models;
+using CrossQuest.Unity.Models;
 
-namespace CrossQuestBackend.Unity.Compilation;
+namespace CrossQuest.Unity.Compilation;
 
 public static class UnityResources
 {

@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace CrossQuestBackend.Android;
+namespace CrossQuest.Android;
 
 public static class AndroidToolsDownloader
 {

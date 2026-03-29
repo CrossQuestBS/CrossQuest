@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using IPA.BuildProcess.Interfaces;
 
-namespace CrossQuestBackend.Unity.Compilation;
+namespace CrossQuest.Unity.Compilation;
 
 
 public static class BuildCallback

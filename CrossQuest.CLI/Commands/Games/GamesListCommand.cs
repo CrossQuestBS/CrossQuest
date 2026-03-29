@@ -1,6 +1,6 @@
 using Spectre.Console.Cli;
 
-namespace CrossQuestBackend.CLI.Commands;
+namespace CrossQuest.CLI.Commands.Games;
 
 public class GamesListCommand : AsyncCommand<GamesListCommand.Settings>
 {

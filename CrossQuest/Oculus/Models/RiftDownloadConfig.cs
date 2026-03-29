@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Oculus.Models;
+namespace CrossQuest.Oculus.Models;
 
 [method: JsonConstructor]
 public record RiftDownloadConfig(

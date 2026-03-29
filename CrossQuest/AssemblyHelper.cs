@@ -1,6 +1,6 @@
-namespace CrossQuestBackend;
-
 using Mono.Cecil;
+
+namespace CrossQuest;
 
 public static class AssemblyHelper
 {

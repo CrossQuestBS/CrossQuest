@@ -1,7 +1,7 @@
-using CrossQuestBackend.Oculus.Models;
+using CrossQuest.Oculus.Models;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Game.Models;
+namespace CrossQuest.Game.Models;
 
 [method: JsonConstructor]
 public record GameVersionInfo(

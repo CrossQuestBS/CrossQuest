@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Oculus.Models;
+namespace CrossQuest.Oculus.Models;
 
 public record Manifest(
     [JsonProperty("appId")] string AppId,

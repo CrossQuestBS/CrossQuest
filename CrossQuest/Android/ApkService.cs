@@ -1,15 +1,13 @@
 using System;
-using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
-using CrossQuestBackend.Android.Models;
-using CrossQuestBackend.Game;
+using CrossQuest.Android.Models;
+using CrossQuest.Game;
 
-namespace CrossQuestBackend.Android;
+namespace CrossQuest.Android;
 
 public static class ApkService
 {

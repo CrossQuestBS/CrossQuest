@@ -1,9 +1,9 @@
 using System.ComponentModel;
-using CrossQuestBackend.Android;
-using CrossQuestBackend.Unity.Compilation;
+using CrossQuest.Android;
+using CrossQuest.Unity.Compilation;
 using Spectre.Console.Cli;
 
-namespace CrossQuestBackend.CLI.Commands.Games;
+namespace CrossQuest.CLI.Commands.Games;
 
 public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
 {

@@ -1,11 +1,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using CrossQuestBackend.Oculus;
-using CrossQuestBackend.Oculus.Models;
+using CrossQuest.Oculus.Models;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Unity;
+namespace CrossQuest.Unity;
 
 public class UnityInstance
 {

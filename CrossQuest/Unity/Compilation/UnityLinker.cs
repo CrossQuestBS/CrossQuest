@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using CrossQuestBackend.Game;
+using CrossQuest.Game;
 
-namespace CrossQuestBackend.Unity.Compilation;
+namespace CrossQuest.Unity.Compilation;
 
 public static class UnityLinker
 {

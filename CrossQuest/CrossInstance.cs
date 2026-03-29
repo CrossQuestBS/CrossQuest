@@ -1,14 +1,12 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using CrossQuestBackend.Android.Models;
-using CrossQuestBackend.Game;
-using CrossQuestBackend.Game.Models;
-using CrossQuestBackend.Unity;
+using CrossQuest.Android.Models;
+using CrossQuest.Game;
+using CrossQuest.Unity;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
-namespace CrossQuestBackend;
+namespace CrossQuest;
 
 public class CrossInstance(UnityInstance unityInstance, GameInstance gameInstance, AndroidTools androidTools)
 {

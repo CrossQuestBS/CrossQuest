@@ -1,5 +1,4 @@
-﻿using CrossQuestBackend.CLI.Commands;
-using CrossQuestBackend.CLI.Commands.Games;
+﻿using CrossQuest.CLI.Commands.Games;
 using Spectre.Console.Cli;
 
 var cancellationTokenSource = new CancellationTokenSource();

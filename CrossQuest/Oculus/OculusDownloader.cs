@@ -4,10 +4,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CrossQuestBackend.Oculus.Models;
+using CrossQuest.Oculus.Models;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Oculus;
+namespace CrossQuest.Oculus;
 
 // TODO:
 // - Add OBB Downloader (Requires GraphQL call)

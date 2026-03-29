@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using CrossQuestBackend.Game.Models;
-using CrossQuestBackend.Oculus;
-using CrossQuestBackend.Unity;
-using CrossQuestBackend.Unity.Compilation;
-using CrossQuestBackend.Unity.Models;
+using CrossQuest.Game.Models;
+using CrossQuest.Oculus;
+using CrossQuest.Unity;
+using CrossQuest.Unity.Compilation;
+using CrossQuest.Unity.Models;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Game;
+namespace CrossQuest.Game;
 
 public class GameInstance
 {

@@ -1,13 +1,7 @@
-using System.Threading;
-using CrossQuestBackend.Android.Models;
-using CrossQuestBackend.Game;
-
-namespace CrossQuestBackend.Android;
-
-using System;
-using System.IO;
 using System.Threading.Tasks;
+using CrossQuest.Android.Models;
 
+namespace CrossQuest.Android;
 
 public static class AdbService
 {

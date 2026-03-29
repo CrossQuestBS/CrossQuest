@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Oculus.Models;
+namespace CrossQuest.Oculus.Models;
 
 public record ManifestFile(
     [JsonProperty("sha256")] string Sha256,

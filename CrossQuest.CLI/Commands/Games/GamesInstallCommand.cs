@@ -1,11 +1,11 @@
 using System.ComponentModel;
-using CrossQuestBackend.Android;
-using CrossQuestBackend.Android.Models;
-using CrossQuestBackend.Game;
-using CrossQuestBackend.Unity;
+using CrossQuest.Android;
+using CrossQuest.Android.Models;
+using CrossQuest.Game;
+using CrossQuest.Unity;
 using Spectre.Console.Cli;
 
-namespace CrossQuestBackend.CLI.Commands.Games;
+namespace CrossQuest.CLI.Commands.Games;
 
 public class GamesInstallCommand : AsyncCommand<GamesInstallCommand.Settings>
 {

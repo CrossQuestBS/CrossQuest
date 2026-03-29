@@ -1,13 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Formats.Tar;
-using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace CrossQuestBackend.Unity;
+namespace CrossQuest.Unity;
 
 public static class UnityDownloader
 {

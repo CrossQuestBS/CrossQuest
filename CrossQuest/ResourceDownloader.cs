@@ -1,11 +1,10 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CrossQuestBackend.Game.Models;
-using CrossQuestBackend.Oculus.Models;
+using CrossQuest.Game.Models;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend;
+namespace CrossQuest;
 
 public static class ResourceDownloader
 {

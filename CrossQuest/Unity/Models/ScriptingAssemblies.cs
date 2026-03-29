@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Unity.Models;
+namespace CrossQuest.Unity.Models;
 
 public static class ScriptingAssembliesExtensions {
     public static string AsJson(this ScriptingAssemblies assemblies)

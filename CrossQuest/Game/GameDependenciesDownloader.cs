@@ -4,7 +4,7 @@ using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CrossQuestBackend.Game;
+namespace CrossQuest.Game;
 
 public static class GameDependenciesDownloader
 {

@@ -1,9 +1,9 @@
 using System.IO;
 using System.Threading.Tasks;
-using CrossQuestBackend.Unity;
+using CrossQuest.Unity;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Android.Models;
+namespace CrossQuest.Android.Models;
 
 public class AndroidTools
 {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace CrossQuestBackend.Game.Models;
+namespace CrossQuest.Game.Models;
 
 public record GameInfo(
     [JsonProperty("id")] string Id,
