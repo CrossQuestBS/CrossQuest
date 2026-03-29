@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Loader;
 using IPA.BuildProcess.Interfaces;
 
@@ -23,9 +24,22 @@ public static class BuildCallback
     
     public static void RunPostLinkerBuilds(List<string> allFiles)
     {
+        var assemblies = new Dictionary<string, Assembly>();
+
+        foreach (var assembly in AssemblyLoadContext.Default.Assemblies)
+        {
+            var fileName = Path.GetFileName(assembly.Location);
+            var properFilePath = allFiles.FirstOrDefault(it => it.EndsWith(fileName));
+            
+            if (properFilePath is null)
+                continue;
+            
+            assemblies.TryAdd(properFilePath, assembly);
+        }
+        
         foreach (var postLinkerBuild in PostLinkerBuilds)
         {
-            postLinkerBuild.Execute(allFiles);
+            postLinkerBuild.Execute(allFiles, assemblies);
         }
     }
     

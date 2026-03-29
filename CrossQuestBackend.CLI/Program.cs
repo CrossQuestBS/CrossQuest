@@ -1,6 +1,5 @@
 ﻿using CrossQuestBackend.CLI.Commands;
 using CrossQuestBackend.CLI.Commands.Games;
-using CrossQuestBackend.Unity.Compilation;
 using Spectre.Console.Cli;
 
 var cancellationTokenSource = new CancellationTokenSource();
@@ -15,6 +14,11 @@ Console.CancelKeyPress += (_, e) =>
 var app = new CommandApp();
 app.Configure(config =>
 {
+    config.SetExceptionHandler((ex, resolver) =>
+    {
+        Console.WriteLine(ex.Message);
+        Console.WriteLine(ex.StackTrace);
+    });
     config.AddBranch("games", add =>
     {
         add.AddCommand<GamesListCommand>("list");

@@ -18,6 +18,12 @@ public static class UnityLinker
 
             if (filePath.Contains("CrossAccord") && filePath.Contains("Build"))
                 File.Delete(filePath);
+
+            if (filePath.EndsWith(".Build.dll"))
+            {
+                Console.WriteLine("Deleting: " + filePath);
+                File.Delete(filePath);
+            }
         }
 
     }

@@ -28,6 +28,7 @@ public static class UnityLinkerHelper
             Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/Managed"),
             Path.Join(gameInstance.InstancePath, "Libs"),
             Path.Join(gameInstance.InstancePath, "Mods"),
+            Path.Join(gameInstance.InstancePath, "Mods", "Build"),
             Path.Join(gameInstance.InstancePath, "Oculus/Beat Saber_Data/Managed"),
             Path.Join(unityInstanceParam.InstancePath, "UnityData/unityaot-linux"),
             Path.Join(unityInstanceParam.InstancePath, "UnityData/unityaot-linux/Facades")

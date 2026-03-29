@@ -62,6 +62,7 @@ public class GameInstance
             Path.Join(InstancePath, "Libs"),
             Path.Join(InstancePath, "Libs", "Build"),
             Path.Join(InstancePath, "Mods"),
+            Path.Join(InstancePath, "Mods", "Build"),
             Path.Join(InstancePath, "Oculus", "Beat Saber_Data", "Managed"),
             Path.Join(InstancePath, "UnityDependencies", "dependencies", "Managed"),
         ];
@@ -71,7 +72,6 @@ public class GameInstance
 
         BuildCallback.LoadAssemblies(modAndLibAssemblies, allFiles);
         BuildCallback.LoadCallbacks(modAndLibAssemblies, assemblyPaths);
-
         BuildCallback.RunPreLinkerBuilds(allFiles);
         UnityLinkerHelper.CopyFilesToStaging(unityInstance, this);
 
