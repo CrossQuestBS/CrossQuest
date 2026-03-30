@@ -59,25 +59,37 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
 
                 Directory.CreateDirectory(tempPath);
 
-                var gameApk = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus"))
-                    .First(it => it.Contains("beat-saber") && it.EndsWith("apk"));
-
-                var extractApkPath = Path.Join(tempPath, "beat-saber");
-                Console.WriteLine($"Extracting APK to {extractApkPath}");
-
-                if (!await ApkService.ExtractApk(androidTools, gameApk, extractApkPath))
+                try
                 {
-                    Console.WriteLine("Failed to extract APK!");
-                    return 1;
+                    var gameApk = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus"))
+                        .First(it => it.Contains("beat-saber") && it.EndsWith("apk"));
+
+                    var extractApkPath = Path.Join(tempPath, "beat-saber");
+                    Console.WriteLine($"Extracting APK to {extractApkPath}");
+
+                    if (!await ApkService.ExtractApk(androidTools, gameApk, extractApkPath))
+                    {
+                        Console.WriteLine("Failed to extract APK!");
+                        return 1;
+                    }
+
+                    ApkService.CopyJniLibs(instance, extractApkPath);
+
+                    await ApkService.CopyMetadata(cancellationToken, instance, extractApkPath, manifest, bootConfig);
+
+                    await ApkService.CreateAPK(androidTools, moddedApkPath,
+                        extractApkPath);
+                    await ApkService.SignAPK(androidTools, moddedApkPath);
                 }
-
-                ApkService.CopyJniLibs(instance, extractApkPath);
-
-                await ApkService.CopyMetadata(cancellationToken, instance, extractApkPath, manifest, bootConfig);
-
-                await ApkService.CreateAPK(androidTools, moddedApkPath,
-                    extractApkPath);
-                await ApkService.SignAPK(androidTools, moddedApkPath);
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                finally
+                {
+                    Directory.Delete(tempPath, true);
+                }
             }
             
         }
