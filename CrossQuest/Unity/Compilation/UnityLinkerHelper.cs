@@ -95,7 +95,7 @@ public static class UnityLinkerHelper
                 "UnityEngine.MultiplayerModule",
                 "UnityEngine.CoreModule",
             });
-        // TODO: Add libs + mods needed
+        
 
         var xmlElements = string.Join("\n",
             filesToSave.Select(it => $"<assembly fullname=\"{it.Replace(".dll", "")}\" preserve=\"all\"/>"));
@@ -109,34 +109,5 @@ public static class UnityLinkerHelper
         File.WriteAllText(Path.Join(instance.InstancePath, "Build", "GameLink.xml"), xmlFile);
 
         File.WriteAllText(Path.Join(instance.InstancePath, "Resources", "link.xml"), UnityResources.LinkFile());
-    }
-
-
-    // TODO: Remove this code!
-    public static Tuple<List<string>, List<string>> GetLinkerAssemblyPaths(string androidPlayer, string unityData,
-        string gameDependencies)
-    {
-        var allowedAssemblies = new List<string>();
-
-        var managedAssembliesPath = Path.Join(androidPlayer, "Managed");
-        var playerScriptAssemblies = Path.Join(gameDependencies, "dependencies/PlayerScriptAssemblies");
-        var unityAotLinux = Path.Join(unityData, "unityaot-linux");
-        var unityAotLinuxFacade = Path.Join(unityData, "unityaot-linux/Facades");
-
-        allowedAssemblies.AddRange(GetDllFiles(managedAssembliesPath));
-        allowedAssemblies.AddRange(GetDllFiles(playerScriptAssemblies));
-        allowedAssemblies.AddRange(GetDllFiles(unityAotLinux));
-        allowedAssemblies.AddRange(GetDllFiles(unityAotLinuxFacade));
-
-        List<string> includeDirectory = new()
-        {
-            managedAssembliesPath,
-            playerScriptAssemblies,
-            //additionalAssembliesPrebuilt,
-            unityAotLinux,
-            unityAotLinuxFacade
-        };
-
-        return new Tuple<List<string>, List<string>>(allowedAssemblies, includeDirectory);
     }
 }
