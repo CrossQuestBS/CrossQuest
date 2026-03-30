@@ -121,7 +121,7 @@ public class GameInstance
     public async Task SetupObb(AndroidTools tools)
     {
         var devicePath = $"/sdcard/Android/obb/com.beatgames.beatsaber/{GameVersionInfo.ObbBinary.FileName}";
-        if (await AdbService.HasFileOnDevice(tools,
+        if (await AdbService.HasPathOnDevice(tools,
                 devicePath))
             return;
         
