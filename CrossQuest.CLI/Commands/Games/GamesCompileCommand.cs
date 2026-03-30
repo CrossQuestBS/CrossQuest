@@ -102,6 +102,7 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
             return 1;
         }
 
+        await instance.SetupObb(androidTools);
         await AdbService.InstallAPK(androidTools, moddedApkPath);
         await AdbService.StartGame(androidTools);
 

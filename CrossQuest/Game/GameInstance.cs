@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CrossQuest.Android;
+using CrossQuest.Android.Models;
 using CrossQuest.Game.Models;
 using CrossQuest.Oculus;
 using CrossQuest.Unity;
@@ -116,6 +118,18 @@ public class GameInstance
         await unityInstance.DownloadFiles();
         await DownloadFiles();
         await DownloadGameFiles(OculusToken);
+        
+    }
+
+    public async Task SetupObb(AndroidTools tools)
+    {
+        var devicePath = $"/sdcard/Android/obb/com.beatgames.beatsaber/{GameVersionInfo.ObbBinary.FileName}";
+        if (await AdbService.HasFileOnDevice(tools,
+                devicePath))
+            return;
+        
+        var oculusPath = Path.Join(InstancePath, "Oculus");
+        await AdbService.PushFile(tools, Path.Join(oculusPath, GameVersionInfo.ObbBinary.FileName), devicePath);
     }
     
     public async Task DownloadFiles()

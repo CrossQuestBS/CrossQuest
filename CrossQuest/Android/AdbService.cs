@@ -5,16 +5,6 @@ namespace CrossQuest.Android;
 
 public static class AdbService
 {
-    
-
-    
-    
-    public static async Task ClearCache(AndroidTools tools)
-    {
-
-        await ProcessCaller.ProcessAsync(tools.Adb, "shell pm clear com.beatgames.beatsaber");
-    }
-    
     public static async Task StartGame(AndroidTools tools)
     {
         await ProcessCaller.ProcessAsync(tools.Adb, "shell am start com.beatgames.beatsaber/com.unity3d.player.UnityPlayerGameActivity");
@@ -34,4 +24,13 @@ public static class AdbService
         return output.Contains("model:Quest");
     }
     
+    public static async Task PushFile(AndroidTools tools, string fromPath, string toPath)
+    {
+        await ProcessCaller.ProcessAsync(tools.Adb, $"push \"{fromPath}\" \"{toPath}\"");
+    }
+
+    public static async Task<bool> HasFileOnDevice(AndroidTools tools, string path)
+    {
+        return await ProcessCaller.ProcessAsync(tools.Adb, $"(ls \"{path}\" && echo \"FILE IS FOUND\") || echo no", "FILE IS FOUND");
+    }
 }
