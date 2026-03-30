@@ -107,9 +107,6 @@ public class GameInstance
         var scriptingAssemblies = UnityResources.ScriptingAssemblies(unityAssemblies, userAssemblies);
         
         await File.WriteAllTextAsync(Path.Join(InstancePath, "Resources", "ScriptingAssemblies.json"), scriptingAssemblies.AsJson().Replace("Names", "names").Replace("Types", "types"));
-        
-        // TODO: Create RuntimeInitializeOnLoads.json
-        // Not important right now
         return true;
     }
 
@@ -132,7 +129,7 @@ public class GameInstance
         await AdbService.PushFile(tools, Path.Join(oculusPath, GameVersionInfo.ObbBinary.FileName), devicePath);
     }
     
-    public async Task DownloadFiles()
+    private async Task DownloadFiles()
     {
         var unityDependenciesPath = Path.Join(InstancePath, "UnityDependencies");
         
@@ -145,19 +142,17 @@ public class GameInstance
                 unityDependenciesPath);
     }
     
-    public async Task DownloadGameFiles(string access_token)
+    private async Task DownloadGameFiles(string access_token)
     {
         var oculusPath = Path.Join(InstancePath, "Oculus");
         
-        var riftFilePath = Path.Join(oculusPath, GameVersionInfo.RiftConfig.FilesToDownload[0].Replace("\\", "/")); 
-        if (!Path.Exists(riftFilePath))
+        if (!OculusDownloader.RiftGameExists(GameVersionInfo.RiftConfig, oculusPath))
             await OculusDownloader.RiftGame(GameVersionInfo.RiftConfig, access_token, oculusPath);
-
-        var files = Directory.GetFiles(oculusPath);
-        if (!files.Any(it => it.EndsWith(".apk")))
+        
+        if (!OculusDownloader.QuestGameExists(oculusPath))
             await OculusDownloader.QuestGame(GameVersionInfo.QuestConfig, access_token, oculusPath);
-
-        if (!files.Any(it => it.Contains(GameVersionInfo.ObbBinary.FileName)))
+        
+        if (!OculusDownloader.ObbExists(GameVersionInfo.ObbBinary, oculusPath))
             await OculusDownloader.DownloadObb(GameVersionInfo.ObbBinary, oculusPath, access_token);
     }
 }

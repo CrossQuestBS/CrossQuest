@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CrossQuest.Oculus.Models;
@@ -22,6 +23,9 @@ public static class OculusDownloader
 
     private static string QuestURL(string binaryId, string accessToken) =>
         $"https://securecdn.oculus.com/binaries/download/?id={binaryId}&access_token={accessToken}";
+
+    public static bool ObbExists(ObbBinary obbBinary, string path) => 
+        Directory.GetFiles(path).Any(it => it.Contains(obbBinary.FileName));
 
     public static async Task DownloadObb(ObbBinary obbBinary, string path, string accessToken)
     {
@@ -59,6 +63,13 @@ public static class OculusDownloader
 
         return new JsonSerializer().Deserialize<Manifest>(reader);
     }
+
+    public static bool RiftGameExists(RiftDownloadConfig downloadConfig,
+        string downloadPath) =>
+        Path.Exists(Path.Join(downloadPath, downloadConfig.FilesToDownload[0].Replace("\\", "/")));
+
+    public static bool QuestGameExists(string path) =>
+        Directory.GetFiles(path).Any(it => it.EndsWith(".apk"));
 
     public static async Task<bool> RiftGame(RiftDownloadConfig downloadConfig, string accessToken,
         string downloadPath)
