@@ -70,11 +70,21 @@ public class GameInstance
         ];
 
 
+        var files = new Dictionary<string, List<string>>
+        {
+            { "Libs", Directory.GetFiles(Path.Join(InstancePath, "Libs")).Where(it => it.EndsWith(".dll")).ToList() },
+            { "Libs/Build", Directory.GetFiles(Path.Join(InstancePath, "Libs", "Build")).Where(it => it.EndsWith(".dll")).ToList() },
+            { "Mods", Directory.GetFiles(Path.Join(InstancePath, "Mods")).Where(it => it.EndsWith(".dll")).ToList() },
+            { "Mods/Build", Directory.GetFiles(Path.Join(InstancePath, "Mods", "Build")).Where(it => it.EndsWith(".dll")).ToList() },
+            { "BeatSaberData", Directory.GetFiles(Path.Join(InstancePath, "Oculus", "Beat Saber_Data", "Managed")).Where(it => it.EndsWith(".dll")).ToList() },
+            { "UnityDependencies", Directory.GetFiles(Path.Join(InstancePath, "UnityDependencies", "dependencies", "Managed")).Where(it => it.EndsWith(".dll")).ToList() },
+        };
+        
         var allFiles = new List<string>();
 
         BuildCallback.LoadAssemblies(modAndLibAssemblies, allFiles);
         BuildCallback.LoadCallbacks(modAndLibAssemblies, assemblyPaths);
-        BuildCallback.RunPreLinkerBuilds(allFiles);
+        BuildCallback.RunPreLinkerBuilds(files);
         UnityLinkerHelper.CopyFilesToStaging(unityInstance, this);
 
         var stagingFiles = Directory.GetFiles(Path.Join(unityInstance.InstancePath, "Temp", "StagingArea")).ToList();

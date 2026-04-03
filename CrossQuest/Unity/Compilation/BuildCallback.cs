@@ -11,14 +11,14 @@ namespace CrossQuest.Unity.Compilation;
 
 public static class BuildCallback
 {
-    public static List<IPostLinkerBuild> PostLinkerBuilds = new ();
-    public static List<IPreLinkerBuild> PreLinkerBuilds = new ();
+    public static List<IPostStagingBuild> IPostStagingBuilds = new ();
+    public static List<IPreStagingBuild> IPreStagingBuilds = new ();
 
-    public static void RunPreLinkerBuilds(List<string> allFiles)
+    public static void RunPreLinkerBuilds(Dictionary<string,List<string>> files)
     {
-        foreach (var preLinkerBuild in PreLinkerBuilds)
+        foreach (var preLinkerBuild in IPreStagingBuilds)
         {
-            preLinkerBuild.Execute(allFiles);
+            preLinkerBuild.Execute(files);
         }
     }
     
@@ -37,7 +37,7 @@ public static class BuildCallback
             assemblies.TryAdd(properFilePath, assembly);
         }
         
-        foreach (var postLinkerBuild in PostLinkerBuilds)
+        foreach (var postLinkerBuild in IPostStagingBuilds)
         {
             postLinkerBuild.Execute(allFiles, assemblies);
         }
@@ -54,7 +54,10 @@ public static class BuildCallback
         foreach (var assemblyPath in allFiles1.Where(it => it.EndsWith(".dll")))
         {
             if (assemblyPath.EndsWith("CrossAccord.Generated.dll"))
+            {
+                File.Delete(assemblyPath);
                 continue;
+            }
             
             try
             {
@@ -101,17 +104,17 @@ public static class BuildCallback
 
                 switch (buildCallback)
                 {
-                    case IPostLinkerBuild postLinkerBuild:
-                        PostLinkerBuilds.Add(postLinkerBuild);
+                    case IPostStagingBuild postLinkerBuild:
+                        IPostStagingBuilds.Add(postLinkerBuild);
                         break;
-                    case IPreLinkerBuild preLinkerBuild:
-                        PreLinkerBuilds.Add(preLinkerBuild);
+                    case IPreStagingBuild preLinkerBuild:
+                        IPreStagingBuilds.Add(preLinkerBuild);
                         break;
                 }
             }
         }
                 
-        PostLinkerBuilds.Sort((a, b) => a.executeOrder.CompareTo(b.executeOrder));
-        PreLinkerBuilds.Sort((a, b) => a.executeOrder.CompareTo(b.executeOrder));
+        IPostStagingBuilds.Sort((a, b) => a.executeOrder.CompareTo(b.executeOrder));
+        IPreStagingBuilds.Sort((a, b) => a.executeOrder.CompareTo(b.executeOrder));
     }   
 }
