@@ -31,16 +31,16 @@ public static class AdbService
     
     public static async Task CreateFolder(AndroidTools tools, string path)
     {
-        await ProcessCaller.ProcessAsync(tools.Adb, $"push \"{path}\"");
+        await ProcessCaller.ProcessAsync(tools.Adb, $"shell mkdir -p \"{path}\"");
     }
     
     public static async Task SetPermission(AndroidTools tools, string path)
     {
-        await ProcessCaller.ProcessAsync(tools.Adb, $"chmod 777 \"{path}\"");
+        await ProcessCaller.ProcessAsync(tools.Adb, $"shell chmod 777 \"{path}\"");
     }
 
     public static async Task<bool> HasPathOnDevice(AndroidTools tools, string path)
     {
-        return await ProcessCaller.ProcessAsync(tools.Adb, $"(ls \"{path}\" && echo \"FILE IS FOUND\") || echo no", "FILE IS FOUND");
+        return await ProcessCaller.ProcessAsync(tools.Adb, $"shell (ls \"{path}\" && echo \"FILE IS FOUND\") || echo no", "FILE IS FOUND");
     }
 }

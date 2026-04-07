@@ -14,7 +14,7 @@ public static class BuildCallback
     public static List<IPostStagingBuild> IPostStagingBuilds = new ();
     public static List<IPreStagingBuild> IPreStagingBuilds = new ();
 
-    public static void RunPreLinkerBuilds(Dictionary<string,List<string>> files)
+    public static void RunPreStagingBuilds(Dictionary<string,List<string>> files)
     {
         foreach (var preLinkerBuild in IPreStagingBuilds)
         {
@@ -22,7 +22,7 @@ public static class BuildCallback
         }
     }
     
-    public static void RunPostLinkerBuilds(List<string> allFiles)
+    public static void RunPostStagingBuilds(List<string> allFiles)
     {
         var assemblies = new Dictionary<string, Assembly>();
 
@@ -34,7 +34,7 @@ public static class BuildCallback
             if (properFilePath is null)
                 continue;
             
-            assemblies.TryAdd(properFilePath, assembly);
+            assemblies.TryAdd(Path.GetFileName(properFilePath), assembly);
         }
         
         foreach (var postLinkerBuild in IPostStagingBuilds)
@@ -53,12 +53,6 @@ public static class BuildCallback
 
         foreach (var assemblyPath in allFiles1.Where(it => it.EndsWith(".dll")))
         {
-            if (assemblyPath.EndsWith("CrossAccord.Generated.dll"))
-            {
-                File.Delete(assemblyPath);
-                continue;
-            }
-            
             try
             {
                 AssemblyLoadContext.Default.LoadFromAssemblyPath(assemblyPath);

@@ -48,6 +48,10 @@ public class GameInstance
     
     public async Task<bool> RunPreIL2CPP(UnityInstance unityInstance)
     {
+        var CrossAccordPath = Path.Join(InstancePath, "Libs", "CrossAccord.Generated.dll");
+        if (Path.Exists(CrossAccordPath))
+            File.Delete(CrossAccordPath);
+        
         List<string> assemblyPaths =
         [
             Path.Join(InstancePath, "Libs"),
@@ -84,12 +88,12 @@ public class GameInstance
 
         BuildCallback.LoadAssemblies(modAndLibAssemblies, allFiles);
         BuildCallback.LoadCallbacks(modAndLibAssemblies, assemblyPaths);
-        BuildCallback.RunPreLinkerBuilds(files);
+        BuildCallback.RunPreStagingBuilds(files);
         UnityLinkerHelper.CopyFilesToStaging(unityInstance, this);
 
         var stagingFiles = Directory.GetFiles(Path.Join(unityInstance.InstancePath, "Temp", "StagingArea")).ToList();
 
-        BuildCallback.RunPostLinkerBuilds(stagingFiles);
+        BuildCallback.RunPostStagingBuilds(stagingFiles);
 
         UnityLinkerHelper.GenerateLinkFile(this);
 

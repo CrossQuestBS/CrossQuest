@@ -20,6 +20,7 @@ public static class il2cppCompile
 
         var arguments = new List<string>()
         {
+            "--profiler-report",
             "--platform=Android",
             "--configuration=Release",
             "--architecture=ARM64",
