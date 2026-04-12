@@ -48,9 +48,9 @@ public class GameInstance
     
     public async Task<bool> RunPreIL2CPP(UnityInstance unityInstance)
     {
-        var CrossAccordPath = Path.Join(InstancePath, "Libs", "CrossAccord.Generated.dll");
-        if (Path.Exists(CrossAccordPath))
-            File.Delete(CrossAccordPath);
+        var AccordPath = Path.Join(InstancePath, "Libs", "Accord.Generated.dll");
+        if (Path.Exists(AccordPath))
+            File.Delete(AccordPath);
         
         List<string> assemblyPaths =
         [

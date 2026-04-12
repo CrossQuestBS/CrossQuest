@@ -16,7 +16,7 @@ public static class UnityLinker
             if (filePath.Contains("IPA") && filePath.Contains("Build"))
                 File.Delete(filePath);
 
-            if (filePath.Contains("CrossAccord") && filePath.Contains("Build"))
+            if (filePath.Contains("Accord") && filePath.Contains("Build"))
                 File.Delete(filePath);
 
             if (filePath.EndsWith(".Build.dll"))

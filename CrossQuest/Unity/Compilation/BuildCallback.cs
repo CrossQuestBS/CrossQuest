@@ -70,7 +70,7 @@ public static class BuildCallback
 
         foreach (var assemblyFile in allAssemblies)
         {
-            if (assemblyFile.EndsWith("CrossAccord.Generated.dll"))
+            if (assemblyFile.EndsWith("Accord.Generated.dll"))
                 continue;
             
             var parent = Directory.GetParent(assemblyFile)!.FullName;
