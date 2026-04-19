@@ -27,6 +27,7 @@ public static class UnityLinkerHelper
             Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/PlayerScriptAssemblies"),
             Path.Join(gameInstance.InstancePath, "UnityDependencies/dependencies/Managed"),
             Path.Join(gameInstance.InstancePath, "Libs"),
+            Path.Join(gameInstance.InstancePath, "Libs", "Build"),
             Path.Join(gameInstance.InstancePath, "Mods"),
             Path.Join(gameInstance.InstancePath, "Mods", "Build"),
             Path.Join(gameInstance.InstancePath, "Oculus/Beat Saber_Data/Managed"),
