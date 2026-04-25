@@ -23,7 +23,11 @@ public class GamesListCommand : AsyncCommand<GamesListCommand.Settings>
                 Console.WriteLine($"  {game.Id}");
                 foreach (var version in game.ModdableVersionList)
                 {
+                    var InstancePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "CrossQuest", "Games", game.Id, $"{version.Version}");
+
                     Console.WriteLine($"   - {version.Version}");
+                    Console.WriteLine($"   {InstancePath}");
+                    Console.WriteLine();
                 }
             }
 
