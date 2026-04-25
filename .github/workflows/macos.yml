@@ -21,7 +21,7 @@ jobs:
         if: ${{ github.event_name == 'release' }}
         run: 'echo "${{ github.event.release.tag_name }}" > ./VERSION'
       - name: Restore
-        run: dotnet restore -r osx-x64
+        run: dotnet restore -r osx-arm64
       - name: Build CrossQuest CLI
         run: dotnet publish -r osx-arm64 -p:PublishReadyToRun=false -p:TieredCompilation=false -p:PublishTrimmed=false --self-contained
       - name: Artifact Upload Mac
@@ -29,4 +29,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MacOS build
-          path: CrossQuest.CLI/bin/Release/net10/osx-x64/publish/
+          path: CrossQuest.CLI/bin/Release/net10.0/osx-arm64/publish/
