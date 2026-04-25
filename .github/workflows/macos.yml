@@ -1,0 +1,33 @@
+name: MacOS DMG
+
+on:
+  release:
+    types:
+      - published
+  push:
+
+jobs:
+  build:
+    name: Build DMG on MacOS
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.402
+      - name: Set version
+        if: ${{ github.event_name == 'release' }}
+        run: 'echo "${{ github.event.release.tag_name }}" > ./VERSION'
+      - name: Restore
+        run: dotnet restore -r osx-x64
+      - name: Build CrossQuest CLI
+        run: dotnet publish -r osx-arm64 -p:PublishReadyToRun=false \
+    -p:TieredCompilation=false -p:PublishTrimmed=false --self-contained
+      - name: Artifact Upload ${{ matrix.target.runtime }}
+        if: ${{ github.event_name != 'release' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target.runtime }}
+          path: QuestPatcher/bin/Release/net6.0/${{ matrix.target.runtime }}/publish/

@@ -1,0 +1,37 @@
+name: Standalone
+
+on:
+  release:
+    types:
+      - published
+  push:
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        target: [{"runtime": 'ubuntu-x64', "artifact": "CrossQuest-CLI-ubuntu.zip"}, {"runtime": 'win-x64', "artifact": "CrossQuest-CLI-windows-standalone.zip"}]
+
+    runs-on: windows-latest
+    name: Build for ${{ matrix.target.runtime }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.402
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Set version
+        if: ${{ github.event_name == 'release' }}
+        run: '"${{ github.event.release.tag_name }}" | Out-File -NoNewline -FilePath ./VERSION'
+      - name: Build ${{ matrix.target.runtime }}
+        run: dotnet publish CrossQuest/CrossQuest.CLI.csproj -r ${{ matrix.target.runtime }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -c Release --self-contained
+      - name: Artifact Upload ${{ matrix.target.runtime }}
+        if: ${{ github.event_name != 'release' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target.runtime }}
+          path: QuestPatcher/bin/Release/net6.0/${{ matrix.target.runtime }}/publish/
