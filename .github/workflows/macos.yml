@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build DMG on MacOS
+    name: Build CLI on MacOS
     runs-on: macos-latest
 
     steps:
@@ -16,7 +16,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.402
+          dotnet-version: 10
       - name: Set version
         if: ${{ github.event_name == 'release' }}
         run: 'echo "${{ github.event.release.tag_name }}" > ./VERSION'
@@ -29,4 +29,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MacOS build
-          path: CrossQuest.CLI/bin/Release/net6.0/osx-x64/publish/
+          path: CrossQuest.CLI/bin/Release/net10/osx-x64/publish/
