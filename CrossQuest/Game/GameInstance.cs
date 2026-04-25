@@ -37,6 +37,8 @@ public class GameInstance
         Directory.CreateDirectory(Path.Join(InstancePath, "UnityDependencies"));
         Directory.CreateDirectory(Path.Join(InstancePath, "Resources"));
         Directory.CreateDirectory(Path.Join(InstancePath, "Mods"));
+        Directory.CreateDirectory(Path.Join(InstancePath, "Mods", "Build"));
+        Directory.CreateDirectory(Path.Join(InstancePath, "Libs", "Build"));
         Directory.CreateDirectory(Path.Join(InstancePath, "Libs"));
         Directory.CreateDirectory(Path.Join(InstancePath, "Oculus"));
     }
