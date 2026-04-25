@@ -23,11 +23,10 @@ jobs:
       - name: Restore
         run: dotnet restore -r osx-x64
       - name: Build CrossQuest CLI
-        run: dotnet publish -r osx-arm64 -p:PublishReadyToRun=false \
-    -p:TieredCompilation=false -p:PublishTrimmed=false --self-contained
-      - name: Artifact Upload ${{ matrix.target.runtime }}
+        run: dotnet publish -r osx-arm64 -p:PublishReadyToRun=false -p:TieredCompilation=false -p:PublishTrimmed=false --self-contained
+      - name: Artifact Upload Mac
         if: ${{ github.event_name != 'release' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target.runtime }}
-          path: QuestPatcher/bin/Release/net6.0/${{ matrix.target.runtime }}/publish/
+          path: CrossQuest/CrossQuest.CLI/bin/Release/net6.0/osx-x64/publish/
