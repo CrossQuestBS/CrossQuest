@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using CrossQuest.Android.Models;
 
@@ -36,6 +37,7 @@ public static class AdbService
     
     public static async Task CreateFolder(AndroidTools tools, string path)
     {
+        Console.WriteLine($"Creating folder {path}");
         await ProcessCaller.ProcessAsync(tools.Adb, $"shell mkdir -p \"{path}\"");
     }
     
@@ -51,6 +53,6 @@ public static class AdbService
 
     public static async Task<bool> HasPathOnDevice(AndroidTools tools, string path)
     {
-        return await ProcessCaller.ProcessAsync(tools.Adb, $"shell (ls \"{path}\" && echo \"FILE IS FOUND\") || echo no", "FILE IS FOUND");
+        return await ProcessCaller.ProcessAsync(tools.Adb, $"shell '[ -e \"{path}\" ]; echo $?'", "0");
     }
 }

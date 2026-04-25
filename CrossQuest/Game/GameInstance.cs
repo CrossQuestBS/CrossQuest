@@ -137,16 +137,15 @@ public class GameInstance
     public async Task SetupObb(AndroidTools tools)
     {
         var devicePath = $"/sdcard/Android/obb/com.beatgames.beatsaber/{GameVersionInfo.ObbBinary.FileName}";
-        if (await AdbService.HasPathOnDevice(tools,
-                devicePath))
+        if (await AdbService.HasPathOnDevice(tools, devicePath))
             return;
         
         Console.WriteLine($"Installing obb, game will start and stop!");
 
         await AdbService.StartGame(tools);
         
-        Console.WriteLine($"Waiting 10 seconds before stopping game");
-        await Task.Delay(10 * 1000);
+        Console.WriteLine($"Waiting 20 seconds before stopping game");
+        await Task.Delay(20 * 1000);
 
         await AdbService.StopGame(tools);
         
