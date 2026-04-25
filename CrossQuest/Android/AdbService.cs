@@ -10,6 +10,11 @@ public static class AdbService
         await ProcessCaller.ProcessAsync(tools.Adb, "shell am start com.beatgames.beatsaber/com.unity3d.player.UnityPlayerGameActivity");
     }
     
+    public static async Task StopGame(AndroidTools tools)
+    {
+        await ProcessCaller.ProcessAsync(tools.Adb, "shell am force-stop com.beatgames.beatsaber");
+    }
+    
     public static async Task InstallAPK(AndroidTools tools, string apk)
     {
         await ProcessCaller.ProcessAsync(tools.Adb, $"install \"{apk}\"");
@@ -36,7 +41,7 @@ public static class AdbService
     
     public static async Task SetPermission(AndroidTools tools, string path)
     {
-        await ProcessCaller.ProcessAsync(tools.Adb, $"shell chmod 777 \"{path}\"");
+        await ProcessCaller.ProcessAsync(tools.Adb, $"shell chmod -R 755 \"{path}\"");
     }
     
     public static async Task SetManageExternalStoragePermission(AndroidTools tools)

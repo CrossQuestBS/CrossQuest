@@ -141,6 +141,15 @@ public class GameInstance
                 devicePath))
             return;
         
+        Console.WriteLine($"Installing obb, game will start and stop!");
+
+        await AdbService.StartGame(tools);
+        
+        Console.WriteLine($"Waiting 10 seconds before stopping game");
+        await Task.Delay(10 * 1000);
+
+        await AdbService.StopGame(tools);
+        
         var oculusPath = Path.Join(InstancePath, "Oculus");
         await AdbService.PushFile(tools, Path.Join(oculusPath, GameVersionInfo.ObbBinary.FileName), devicePath);
     }

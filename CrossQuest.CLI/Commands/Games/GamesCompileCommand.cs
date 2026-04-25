@@ -115,21 +115,29 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
         }
 
         var crossQuestFolder = "/sdcard/CrossQuest/com.beatgames.beatsaber";
+        
+        Console.WriteLine("Logging to apk!");
+        await AdbService.InstallAPK(androidTools, moddedApkPath);
 
+        Console.WriteLine("Setting permissions to game!");
         await AdbService.SetManageExternalStoragePermission(androidTools);
         
+        Console.WriteLine($"Checking if it has path {crossQuestFolder}!");
         if (!await AdbService.HasPathOnDevice(androidTools, crossQuestFolder))
         {
-            await AdbService.CreateFolder(androidTools, crossQuestFolder);
-            await AdbService.SetPermission(androidTools, crossQuestFolder);
+            Console.WriteLine($"It does not have the path");
+            await AdbService.CreateFolder(androidTools, "/sdcard/CrossQuest/com.beatgames.beatsaber");
             await AdbService.CreateFolder(androidTools, Path.Join(crossQuestFolder, "UserData"));
-            await AdbService.SetPermission(androidTools, Path.Join(crossQuestFolder, "UserData"));
+            await AdbService.SetPermission(androidTools, "/sdcard/CrossQuest");
         }
 
+       
+        
         await instance.SetupObb(androidTools);
-        await AdbService.InstallAPK(androidTools, moddedApkPath);
+        
+        Console.WriteLine($"Starting game!");
+        
         await AdbService.StartGame(androidTools);
-
         return 0;
     }
 }
