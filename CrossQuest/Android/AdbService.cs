@@ -38,6 +38,11 @@ public static class AdbService
     {
         await ProcessCaller.ProcessAsync(tools.Adb, $"shell chmod 777 \"{path}\"");
     }
+    
+    public static async Task SetManageExternalStoragePermission(AndroidTools tools)
+    {
+        await ProcessCaller.ProcessAsync(tools.Adb, $"shell appops set --uid com.beatgames.beatsaber MANAGE_EXTERNAL_STORAGE allow");
+    }
 
     public static async Task<bool> HasPathOnDevice(AndroidTools tools, string path)
     {

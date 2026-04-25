@@ -116,10 +116,14 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
 
         var crossQuestFolder = "/sdcard/CrossQuest/com.beatgames.beatsaber";
 
+        await AdbService.SetManageExternalStoragePermission(androidTools);
+        
         if (!await AdbService.HasPathOnDevice(androidTools, crossQuestFolder))
         {
             await AdbService.CreateFolder(androidTools, crossQuestFolder);
             await AdbService.SetPermission(androidTools, crossQuestFolder);
+            await AdbService.CreateFolder(androidTools, Path.Join(crossQuestFolder, "UserData"));
+            await AdbService.SetPermission(androidTools, Path.Join(crossQuestFolder, "UserData"));
         }
 
         await instance.SetupObb(androidTools);
