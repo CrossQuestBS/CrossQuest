@@ -11,7 +11,7 @@ jobs:
   build:
     strategy:
       matrix:
-        target: [{"runtime": 'ubuntu-x64', "artifact": "CrossQuest-CLI-ubuntu.zip"}, {"runtime": 'win-x64', "artifact": "CrossQuest-CLI-windows-standalone.zip"}]
+        target: [{"runtime": 'linux-x64', "artifact": "CrossQuest-CLI-linux.zip"}, {"runtime": 'win-x64', "artifact": "CrossQuest-CLI-windows-standalone.zip"}]
 
     runs-on: windows-latest
     name: Build for ${{ matrix.target.runtime }}
