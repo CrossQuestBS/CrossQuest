@@ -12,12 +12,24 @@ public static class AndroidToolsDownloader
 {
     private static readonly HttpClient Client = new();
 
-    private static string GetPlatformString(OSPlatform platform) =>
-        platform == OSPlatform.OSX ? "darwin" : platform == OSPlatform.Linux ? "linux" : "windows";
-
-    private static async Task<string> DownloadNDKForOSX(string ndkDirectory)
+    private static string GetPlatformString(OSPlatform platform)
     {
-        var responseByteArray = await Client.GetByteArrayAsync("https://dl.google.com/android/repository/android-ndk-r29-darwin.dmg");
+        if(platform == OSPlatform.OSX)
+            return "darwin";
+        if(platform == OSPlatform.Linux)
+            return  "linux";
+        if(platform == OSPlatform.Windows)
+            return "windows";
+        throw new InvalidOperationException("Your operating system is not supported.");
+    }
+
+    private static readonly string AndroidNDKName = "android-ndk-r29";
+
+    private static async Task<string> DownloadNDKToFile(string ndkDirectory, string postfix)
+    {
+        var name = $"{AndroidNDKName}-{postfix}";
+
+        var responseByteArray = await Client.GetByteArrayAsync($"https://dl.google.com/android/repository/{name}");
 
         var tempFolder = Path.GetTempPath();
 
@@ -25,9 +37,16 @@ public static class AndroidToolsDownloader
 
         Directory.CreateDirectory(dir);
 
-        var dmgFilePath = Path.Join(dir, "android-ndk-r29-darwin.dmg");
-        await File.WriteAllBytesAsync(dmgFilePath, responseByteArray);
-            
+        var filePath = Path.Join(dir, name);
+        await File.WriteAllBytesAsync(filePath, responseByteArray);
+
+        return filePath;
+    }
+
+    private static async Task<string> DownloadNDKForOSX(string ndkDirectory)
+    {
+        var dmgFilePath = await DownloadNDKToFile(ndkDirectory, "darwin.dmg");
+
         await ProcessCaller.ProcessAsync("hdiutil", $"attach \"{dmgFilePath}\" -nobrowse -noautoopen", true);
 
         var ndkVolumePath = Directory.GetDirectories("/Volumes").First(it => it.Contains("Android"));
@@ -38,29 +57,41 @@ public static class AndroidToolsDownloader
         await ProcessCaller.ProcessAsync("cp", $"-r \"{ndkAppDir}/Contents/NDK\" \"{ndkDirectory}\" ", true);
         await ProcessCaller.ProcessAsync("hdiutil", $"detach \"{ndkVolumePath}\"", true);
 
-        Directory.Delete(dir, true);
+        Directory.Delete(Path.GetDirectoryName(dmgFilePath), true);
         return ndkDirectory;
     }
-    
+
+    private static async Task<string> DownloadNDKForLinux(string ndkDirectory)
+    {
+        var zipFilePath = await DownloadNDKToFile(ndkDirectory, "linux.zip");
+        // Need to use external program `unzip`, because .NET does not extract symlinks correctly
+        await ProcessCaller.ProcessAsync("unzip", $"\"{zipFilePath}\" -d \"{GetAndroidFolder()}\"");
+        Directory.Delete(Path.GetDirectoryName(zipFilePath), true);
+        return $"{GetAndroidFolder()}/{AndroidNDKName}";
+    }
+
     public static async Task<string> DownloadNDK()
     {
         var androidFolder = GetAndroidFolder();
 
-        var ndkDirectory = Path.Join(androidFolder, "android-ndk-r29");
-        
+        var ndkDirectory = Path.Join(androidFolder, AndroidNDKName);
+
         if (Directory.Exists(ndkDirectory))
             return ndkDirectory;
-
+        Console.WriteLine($"[Download] Downloading {AndroidNDKName}");
         if (PlatformService.CurrentPlatform == OSPlatform.OSX)
-            return await DownloadNDKForOSX(ndkDirectory);
-      
-        Console.WriteLine($"[Download] Downloading android ndk r29");
-        var requestUrl =
-            $"https://dl.google.com/android/repository/android-ndk-r29-{GetPlatformString(PlatformService.CurrentPlatform)}.zip";
-        var stream = await Client.GetStreamAsync(requestUrl);
-        await ZipFile.ExtractToDirectoryAsync(stream, androidFolder);
-        Console.WriteLine($"[Download] Done downloading android ndk r29");
-        return ndkDirectory; 
+            ndkDirectory = await DownloadNDKForOSX(ndkDirectory);
+        else if (PlatformService.CurrentPlatform == OSPlatform.Linux)
+            ndkDirectory = await DownloadNDKForLinux(ndkDirectory);
+        else
+        {
+            var requestUrl =
+                $"https://dl.google.com/android/repository/{AndroidNDKName}-{GetPlatformString(PlatformService.CurrentPlatform)}.zip";
+            var stream = await Client.GetStreamAsync(requestUrl);
+            await ZipFile.ExtractToDirectoryAsync(stream, androidFolder);
+        }
+        Console.WriteLine($"[Download] Done downloading {AndroidNDKName}");
+        return ndkDirectory;
     }
 
     private static string GetAndroidFolder()
@@ -93,14 +124,14 @@ public static class AndroidToolsDownloader
     {
         var androidFolder = GetAndroidFolder();
         var buildToolsPath = Path.Join(androidFolder, "build-tools");
-        
+
         var fileSuffix = PlatformService.CurrentPlatform == OSPlatform.Windows ? ".bat" : "";
 
         var apksignerPath = Path.Join(buildToolsPath, $"apksigner{fileSuffix}");
 
         if (File.Exists(apksignerPath))
             return apksignerPath;
-        
+
 
         // Just a check to prevent overriding or error from ZipFile.ExtractToDirectoryAsync
         if (Directory.Exists(Path.Join(androidFolder, "android-14")))
@@ -110,12 +141,12 @@ public static class AndroidToolsDownloader
 
         if (platformString == "darwin")
             platformString = "macosx";
-        
+
         Console.WriteLine($"[Download] Downloading ApkSigner for platform: {platformString}");
         var requestUrl =
             $"https://dl.google.com/android/repository/build-tools_r34-{platformString}.zip";
         var manifestStream = await Client.GetStreamAsync(requestUrl);
-        
+
         await ZipFile.ExtractToDirectoryAsync(manifestStream, androidFolder);
 
         Directory.Move(Path.Join(androidFolder, "android-14"), buildToolsPath);
@@ -130,7 +161,7 @@ public static class AndroidToolsDownloader
         var fileSuffix = PlatformService.CurrentPlatform == OSPlatform.Windows ? ".exe" : "";
 
         var adbPath = Path.Join(androidFolder, "platform-tools", $"adb{fileSuffix}");
-        
+
         if (File.Exists(adbPath))
             return adbPath;
 
