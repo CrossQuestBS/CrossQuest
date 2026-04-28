@@ -18,6 +18,11 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
         [Description("Deploy to device if connected using adb")]
         [DefaultValue(false)]
         public required bool DeployToDevice { get; init; }
+        
+        [CommandOption("-s|--skip-deploy-setup")]
+        [Description("Skips deploy setup checks")]
+        [DefaultValue(false)]
+        public required bool SkipSetup { get; init; } = false;
     }
 
     protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
@@ -121,19 +126,23 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
 
         
         Console.WriteLine($"Checking if it has path {crossQuestFolder}!");
-        
-        if (!await AdbService.HasPathOnDevice(androidTools, crossQuestFolder))
+
+        if (!settings.SkipSetup)
         {
-            Console.WriteLine($"Does not have the path");
-            await AdbService.CreateFolder(androidTools, "/sdcard/CrossQuest/com.beatgames.beatsaber");
-            await AdbService.CreateFolder(androidTools,"/sdcard/CrossQuest/com.beatgames.beatsaber/UserData");
-            await AdbService.SetPermission(androidTools, "/sdcard/CrossQuest");
+            if (!await AdbService.HasPathOnDevice(androidTools, crossQuestFolder))
+            {
+                Console.WriteLine($"Does not have the path");
+                await AdbService.CreateFolder(androidTools, "/sdcard/CrossQuest/com.beatgames.beatsaber");
+                await AdbService.CreateFolder(androidTools,"/sdcard/CrossQuest/com.beatgames.beatsaber/UserData");
+                await AdbService.SetPermission(androidTools, "/sdcard/CrossQuest");
+            }
+        
+            await instance.SetupObb(androidTools);
+        
+            Console.WriteLine("Setting permissions to game!");
+            await AdbService.SetManageExternalStoragePermission(androidTools);
         }
-        
-        await instance.SetupObb(androidTools);
-        
-        Console.WriteLine("Setting permissions to game!");
-        await AdbService.SetManageExternalStoragePermission(androidTools);
+  
         
         Console.WriteLine($"Starting game!");
         
