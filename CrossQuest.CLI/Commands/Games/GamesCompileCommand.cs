@@ -23,6 +23,11 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
         [Description("Skips deploy setup checks")]
         [DefaultValue(false)]
         public required bool SkipSetup { get; init; } = false;
+        
+        [CommandOption("--debug")]
+        [Description("Builds with C++ debug option, is faster build but slower runtime")]
+        [DefaultValue(false)]
+        public required bool EnableDebug { get; init; } = false;
     }
 
     protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
@@ -46,7 +51,7 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
             return 1;
         }
 
-        if (!await instance.RunIL2CPP(unityInstance, androidTools.NDK))
+        if (!await instance.RunIL2CPP(unityInstance, androidTools.NDK, settings.EnableDebug))
         {
             Console.WriteLine("SOMETHING WENT WRONG during compilation!");
             return 1;

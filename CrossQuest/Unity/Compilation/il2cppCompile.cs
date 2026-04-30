@@ -8,7 +8,7 @@ namespace CrossQuest.Unity.Compilation;
 
 public static class il2cppCompile
 {
-    public static async Task<bool> Compile(UnityInstance unityInstance, GameInstance gameInstance, string ndkPath)
+    public static async Task<bool> Compile(UnityInstance unityInstance, GameInstance gameInstance, string ndkPath, bool enableDebug)
     {
 
         var outDirectory = Path.Join(gameInstance.InstancePath, "Build", "Native", "arm64-v8a", "libil2cpp.so");
@@ -22,7 +22,7 @@ public static class il2cppCompile
         {
             "--profiler-report",
             "--platform=Android",
-            "--configuration=Release",
+            $"--configuration={(enableDebug ? "Debug" : "Release")}",
             "--architecture=ARM64",
             "--dotnetprofile=unityaot-linux",
             "--convert-to-cpp",
