@@ -24,21 +24,18 @@ public static class OculusDownloader
     private static string QuestURL(string binaryId, string accessToken) =>
         $"https://securecdn.oculus.com/binaries/download/?id={binaryId}&access_token={accessToken}";
 
-    public static bool ObbExists(ObbBinary obbBinary, string path) => 
+    public static bool ObbExists(ObbBinary obbBinary, string path) =>
         Directory.GetFiles(path).Any(it => it.Contains(obbBinary.FileName));
 
     public static async Task DownloadObb(ObbBinary obbBinary, string path, string accessToken)
     {
+        // Spoof user agent so we can download obb
+        Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (compatible) Firefox/144.0");
+
         Console.WriteLine($"[Download] Downloading obb: {obbBinary.BinaryId} - {obbBinary.FileName}");
         var responseMessage = await Client.GetAsync(
             QuestURL(obbBinary.BinaryId, accessToken)
         );
-
-        var contentDisposition = responseMessage.Content.Headers.ContentDisposition;
-        if (contentDisposition is null)
-            throw new FileNotFoundException($"obb with binaryId {obbBinary.BinaryId} not found");
-
-      
 
         var filePath = Path.Join(path, obbBinary.FileName);
 
@@ -144,7 +141,7 @@ public static class OculusDownloader
             fileBytes.AddRange(bytes);
         }
     }
-    
+
     private static string GetVersionedFilename(QuestDownloadConfig config, string? downloadFileName)
     {
         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(downloadFileName);
