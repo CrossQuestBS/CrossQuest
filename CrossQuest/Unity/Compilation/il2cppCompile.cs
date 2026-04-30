@@ -32,6 +32,8 @@ public static class il2cppCompile
             $"--outputpath=\"{outDirectory}\"",
             $"--cachedirectory=\"{cache}\"",
             $"--tool-chain-path=\"{ndkPath}\"",
+            "--generics-option=EnableFullSharing",
+            "--static-lib-il2-cpp",
             "--verbose",
             "--emit-null-checks",
             "--enable-array-bounds-check",

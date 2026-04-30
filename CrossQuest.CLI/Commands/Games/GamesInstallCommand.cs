@@ -82,7 +82,8 @@ public class GamesInstallCommand : AsyncCommand<GamesInstallCommand.Settings>
         await androidTools.Save(unityInstance);
 
         var CrossInstance = new CrossInstance(unityInstance, instance, androidTools);
-        await CrossInstance.SetAsActiveInstance();
+        await CrossInstance.SaveInstance(settings.GameId, settings.GameVersion);
+        await CrossInstance.SetAsActiveInstance(settings.GameId, settings.GameVersion);
 
         await File.WriteAllTextAsync(finishedFile, "Hello!", cancellationToken);
         return 0;
