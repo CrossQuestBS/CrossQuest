@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using CrossQuest.Android;
 using CrossQuest.Unity.Compilation;
 using Spectre.Console.Cli;
@@ -33,6 +34,7 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
     protected override async Task<int> ExecuteAsync(CommandContext context, Settings settings,
         CancellationToken cancellationToken)
     {
+        long longTotalStopWatch = 0;
         var crossInstance = CrossInstance.GetActiveInstance();
 
         if (crossInstance is null)
@@ -44,18 +46,37 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
         var instance = crossInstance.GameInstance;
         var unityInstance = crossInstance.UnityInstance;
         var androidTools = crossInstance.AndroidTools;
+        Stopwatch stopWatch = new Stopwatch();
+
+        stopWatch.Start();
+        Console.WriteLine($"Running Pre il2cpp");
 
         if (!await instance.RunPreIL2CPP(unityInstance))
         {
             Console.WriteLine("something went wrong during pre il2cpp step");
             return 1;
         }
+        
+        stopWatch.Stop();
 
+        longTotalStopWatch += stopWatch.ElapsedMilliseconds;
+        Console.WriteLine($"Pre il2cpp took {stopWatch.ElapsedMilliseconds / 1000}s / {longTotalStopWatch / 1000}s");
+        Thread.Sleep(400);
+
+        stopWatch.Reset();
+        stopWatch.Start();
+        Console.WriteLine($"Running IL2CPP step");
+        
         if (!await instance.RunIL2CPP(unityInstance, androidTools.NDK, settings.EnableDebug))
         {
-            Console.WriteLine("SOMETHING WENT WRONG during compilation!");
+            Console.WriteLine("IL2CPP compilation failed!");
             return 1;
         }
+
+        stopWatch.Stop();
+        longTotalStopWatch += stopWatch.ElapsedMilliseconds;
+        Console.WriteLine($"IL2CPP took {stopWatch.ElapsedMilliseconds / 1000}s / {longTotalStopWatch / 1000}s");
+        Thread.Sleep(400);
 
         var moddedApkPath = Path.Join(instance.InstancePath, "Build", "Modded.apk");
         try
@@ -73,7 +94,9 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
                 {
                     var gameApk = Directory.GetFiles(Path.Join(instance.InstancePath, "Oculus"))
                         .First(it => it.Contains("beat-saber") && it.EndsWith("apk"));
-
+                    
+                    stopWatch.Reset();
+                    stopWatch.Start();
                     var extractApkPath = Path.Join(tempPath, "beat-saber");
                     Console.WriteLine($"Extracting APK to {extractApkPath}");
 
@@ -82,14 +105,43 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
                         Console.WriteLine("Failed to extract APK!");
                         return 1;
                     }
+                    stopWatch.Stop();
+                    longTotalStopWatch += stopWatch.ElapsedMilliseconds;
+                    Console.WriteLine($"Extracting APK took {stopWatch.ElapsedMilliseconds / 1000}s / {longTotalStopWatch / 1000}s");
+                    Thread.Sleep(400);
 
+                    Console.WriteLine($"Copying files");
+                    stopWatch.Reset();
+                    stopWatch.Start();
                     ApkService.CopyJniLibs(instance, extractApkPath);
 
                     await ApkService.CopyMetadata(cancellationToken, instance, extractApkPath, manifest, bootConfig);
 
+                    stopWatch.Stop();
+                    longTotalStopWatch += stopWatch.ElapsedMilliseconds;
+                    Console.WriteLine($"Copying files took {stopWatch.ElapsedMilliseconds / 1000}s / {longTotalStopWatch / 1000}s");
+                    Thread.Sleep(400);
+
+                    stopWatch.Reset();
+                    stopWatch.Start();
+                    Console.WriteLine($"Creating APK");
                     await ApkService.CreateAPK(androidTools, moddedApkPath,
                         extractApkPath);
+                    
+                    stopWatch.Stop();
+                    longTotalStopWatch += stopWatch.ElapsedMilliseconds;
+                    Console.WriteLine($"Creating APK took {stopWatch.ElapsedMilliseconds / 1000}s / {longTotalStopWatch / 1000}s");
+                    Thread.Sleep(400);
+
+                    stopWatch.Reset();
+                    stopWatch.Start();
+                    Console.WriteLine($"Signing APK");
+
                     await ApkService.SignAPK(androidTools, moddedApkPath);
+                    
+                    stopWatch.Stop();
+                    longTotalStopWatch += stopWatch.ElapsedMilliseconds;
+                    Console.WriteLine($"Signing APK took {stopWatch.ElapsedMilliseconds / 1000}s / {longTotalStopWatch / 1000}s");
                 }
                 catch (Exception e)
                 {

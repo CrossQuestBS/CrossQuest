@@ -43,7 +43,7 @@ public static class il2cppCompile
         };
 
         
-        Console.WriteLine("TRIED TO CALL WITH ARGUMENTS: " + String.Join(" ", arguments));
+        Console.WriteLine("il2cpp call with \n" + String.Join("\n", arguments));
         return await ProcessCaller.ProcessAsync(executable, String.Join(" ", arguments), false);
     }
 }

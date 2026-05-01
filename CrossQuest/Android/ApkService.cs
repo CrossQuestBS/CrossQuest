@@ -69,7 +69,7 @@ public static class ApkService
     
     public static async Task<bool> ExtractApk(AndroidTools tools, string apkPath, string extractPath)
     {
-        return await ProcessCaller.ProcessAsync("java", $"-jar \"{tools.ApktoolJar}\" d \"{apkPath}\" -o \"{extractPath}\" -f", true);
+        return await ProcessCaller.ProcessAsync("java", $"-jar \"{tools.ApktoolJar}\" d --only-manifest \"{apkPath}\" -o \"{extractPath}\" -f", true);
     }
     
     public static async Task<bool> CreateAPK(AndroidTools tools, string apkPath, string extractPath)
@@ -105,7 +105,7 @@ public static class ApkService
         var apkSignerPath = tools.Apksigner;
         var result = await ProcessCaller.ProcessAsync(
             apkSignerPath, 
-            $"sign -v --key \"{keyPath}\" --cert \"{certPath}\" \"{apkPath}\"");
+            $"sign -v --key \"{keyPath}\" --min-sdk-version 32 --cert \"{certPath}\" \"{apkPath}\"");
 
         Directory.Delete(temporaryPath, true);
 
