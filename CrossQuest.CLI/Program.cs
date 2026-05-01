@@ -24,7 +24,11 @@ app.Configure(config =>
         add.AddCommand<GamesInstallCommand>("install");
         add.AddCommand<GamesCompileCommand>("compile");
         add.AddCommand<GamesSelectCommand>("select");
-
+    });
+    
+    config.AddBranch("fix", add =>
+    {
+        add.AddCommand<ExcludeDefenderCommand>("defender");
     });
 });
 
