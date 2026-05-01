@@ -28,7 +28,7 @@ public class ExcludeDefenderCommand : AsyncCommand<ExcludeDefenderCommand.Settin
             {
                 Verb = "runas",
                 FileName = "powershell.exe",
-                ArgumentList = { "-Command", $"\"Add-MpPreference -ExclusionPath '{crossQuestPath}'\"" },
+                Arguments = $"-Command \"Add-MpPreference -ExclusionPath '{crossQuestPath}'\"",
                 UseShellExecute = true
             };
             using var proc = new Process();
