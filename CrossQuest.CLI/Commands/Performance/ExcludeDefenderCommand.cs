@@ -24,13 +24,13 @@ public class ExcludeDefenderCommand : AsyncCommand<ExcludeDefenderCommand.Settin
         try
         {
             
-            var processInfo = new ProcessStartInfo("powershell")
+            var processInfo = new ProcessStartInfo()
             {
                 Verb = "runas",
-                ArgumentList = { $" -Command Add-MpPreference -ExclusionPath '{crossQuestPath}'" },
-                UseShellExecute = false,
+                FileName = "powershell.exe",
+                ArgumentList = { "-Command", $"\"Add-MpPreference -ExclusionPath '{crossQuestPath}'\"" },
+                UseShellExecute = true
             };
-            
             using var proc = new Process();
             proc.StartInfo = processInfo;
             proc.Start();
