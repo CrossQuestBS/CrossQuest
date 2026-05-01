@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using CrossQuest.Android;
 using CrossQuest.Unity.Compilation;
 using Spectre.Console.Cli;
@@ -86,7 +87,12 @@ public class GamesCompileCommand : AsyncCommand<GamesCompileCommand.Settings>
                 var bootConfig = UnityResources.BootConfig();
                 var manifest = UnityResources.Manifest();
 
-                var tempPath = Path.GetTempPath() + Guid.NewGuid();
+                var tempPath = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+                // This is to make sure we use a temporary path that is within CrossQuest
+                // So it can be excluded by Windows Defender :D
+                if (PlatformService.CurrentPlatform == OSPlatform.Windows)
+                    tempPath = Path.Join(instance.InstancePath, "Build", "Temp", Guid.NewGuid().ToString());
 
                 Directory.CreateDirectory(tempPath);
 
