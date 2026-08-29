@@ -43,9 +43,9 @@ public class GameInstance
         Directory.CreateDirectory(Path.Join(InstancePath, "Oculus"));
     }
 
-    public async Task<bool> RunIL2CPP(UnityInstance unityInstance, string ndkPath)
+    public async Task<bool> RunIL2CPP(UnityInstance unityInstance, string ndkPath, bool enableDebug)
     {
-        return await il2cppCompile.Compile(unityInstance, this, ndkPath);
+        return await il2cppCompile.Compile(unityInstance, this, ndkPath, enableDebug);
     }
     
     public async Task<bool> RunPreIL2CPP(UnityInstance unityInstance)
